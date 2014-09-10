@@ -1,4 +1,6 @@
 *
 !.gitignore
-!/customscripts
+!/customscripts/
+!/customscripts/**
 !/local
+!/local/**
