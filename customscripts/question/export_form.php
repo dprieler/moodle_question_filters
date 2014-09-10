@@ -76,7 +76,7 @@ class custom_question_export_form extends moodleform {
         $mform->setDefault('cattofile', 1);
         $mform->setDefault('contexttofile', 1);
 
-		$mform->addElement('header', 'categoryheader', 'Special Filters');
+		$mform->addElement('header', 'categoryheader', 'Special Filters (only for Moodle XML format)');
 
 		$mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
         $mform->setType('filter_name', PARAM_TEXT);
