@@ -24,9 +24,10 @@
  */
 
 
-require_once(dirname(__FILE__) . '/../config.php');
+// require_once(dirname(__FILE__) . '/../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
-require_once($CFG->dirroot . '/question/export_form.php');
+require_once(dirname(__FILE__) . '/editlib.php');
+require_once(dirname(__FILE__) . '/export_form.php');
 require_once($CFG->dirroot . '/question/format.php');
 
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
@@ -44,7 +45,7 @@ $PAGE->set_title($strexportquestions);
 $PAGE->set_heading($COURSE->fullname);
 echo $OUTPUT->header();
 
-$export_form = new question_export_form($thispageurl,
+$export_form = new custom_question_export_form($thispageurl,
         array('contexts' => $contexts->having_one_edit_tab_cap('export'), 'defaultcategory' => $pagevars['cat']));
 
 
@@ -69,7 +70,12 @@ if ($from_form = $export_form->get_data()) {
     $export_url = question_make_export_url($thiscontext->id, $category->id,
             $from_form->format, $withcategories, $withcontexts, $filename);
 
-    echo $OUTPUT->box_start();
+	$export_url->param('filter_name', $from_form->filter_name);
+	$export_url->param('filter_questiontext', $from_form->filter_questiontext);
+	$export_url->param('filter_defaultmark_search', $from_form->filter_defaultmark_search);
+	$export_url->param('filter_defaultmark', $from_form->filter_defaultmark);
+
+	echo $OUTPUT->box_start();
     echo get_string('yourfileshoulddownload', 'question', $export_url->out());
     echo $OUTPUT->box_end();
 
@@ -86,3 +92,5 @@ echo $OUTPUT->heading_with_help($strexportquestions, 'exportquestions', 'questio
 $export_form->display();
 
 echo $OUTPUT->footer();
+
+exit;

@@ -24,8 +24,9 @@
  */
 
 
-require_once(dirname(__FILE__) . '/../config.php');
+// require_once(dirname(__FILE__) . '/../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
+require_once(dirname(__FILE__) . '/editlib.php');
 
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
         question_edit_setup('questions', '/question/edit.php');
@@ -36,7 +37,7 @@ if (($lastchanged = optional_param('lastchanged', 0, PARAM_INT)) !== 0) {
 }
 $PAGE->set_url($url);
 
-$questionbank = new question_bank_view($contexts, $thispageurl, $COURSE, $cm);
+$questionbank = new custom_question_bank_view($contexts, $thispageurl, $COURSE, $cm);
 $questionbank->process_actions();
 
 // TODO log this page view.
@@ -54,3 +55,5 @@ $questionbank->display('questions', $pagevars['qpage'], $pagevars['qperpage'],
 echo "</div>\n";
 
 echo $OUTPUT->footer();
+
+exit;

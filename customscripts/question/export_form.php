@@ -35,7 +35,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright  2007 Jamie Pratt me@jamiep.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class question_export_form extends moodleform {
+class custom_question_export_form extends moodleform {
 
     protected function definition() {
         $mform = $this->_form;
@@ -75,6 +75,16 @@ class question_export_form extends moodleform {
         $mform->disabledIf('categorygroup', 'cattofile', 'notchecked');
         $mform->setDefault('cattofile', 1);
         $mform->setDefault('contexttofile', 1);
+
+		$mform->addElement('header', 'categoryheader', 'Special Filters');
+
+		$mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
+        $mform->setType('filter_name', PARAM_TEXT);
+        $mform->addElement('text', 'filter_questiontext', 'Fragetext', 'maxlength="254" size="50"');
+        $mform->setType('filter_questiontext', PARAM_TEXT);
+        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter', array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
+        $mform->addElement('text', 'filter_defaultmark', 'Punktezahl', 'maxlength="254" size="50"');
+        $mform->setType('filter_defaultmark', PARAM_TEXT);
 
         // Set a template for the format select elements
         $renderer = $mform->defaultRenderer();
