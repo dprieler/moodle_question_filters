@@ -45,7 +45,7 @@
 require_once($CFG->dirroot . '/mod/quiz/editlib.php');
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 require_once($CFG->dirroot . '/question/category_class.php');
-require_once(dirname(__FILE__) . '/editlib.php');
+require_once($CFG->customscripts . '/mod/quiz/editlib.php');
 
 
 /**
@@ -238,7 +238,7 @@ if ((optional_param('addrandom', false, PARAM_BOOL)) && confirm_sesskey()) {
     $addonpage = optional_param('addonpage', 0, PARAM_INT);
     $categoryid = required_param('categoryid', PARAM_INT);
     $randomcount = required_param('randomcount', PARAM_INT);
-    quiz_add_random_questions($quiz, $addonpage, $categoryid, $randomcount, $recurse);
+    custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $randomcount, $recurse);
 
     quiz_delete_previews($quiz);
     quiz_update_sumgrades($quiz);
@@ -505,11 +505,31 @@ echo '<span id="questionbank"></span>';
 echo '<div class="container">';
 echo '<div id="module" class="module">';
 echo '<div class="bd">';
+ob_start();
 $questionbank->display('editq',
         $pagevars['qpage'],
         $pagevars['qperpage'],
         $pagevars['cat'], $pagevars['recurse'], $pagevars['showhidden'],
         $pagevars['qbshowtext']);
+// add filter form
+$output = ob_get_clean();
+$return = '';
+$return .= html_writer::label('Fragetitel', 'filter_name');
+$return .= html_writer::empty_tag('input',
+		array('name' => 'filter_name', 'id' => 'filter_name', 'class' => 'searchoptions', 'value' => optional_param('filter_name', null, PARAM_TEXT)));
+
+$return .= html_writer::label('Fragetext', 'filter_questiontext');
+$return .= html_writer::empty_tag('input',
+		array('name' => 'filter_questiontext', 'id' => 'filter_questiontext', 'class' => 'searchoptions', 'value' => optional_param('filter_questiontext', null, PARAM_TEXT)));
+
+$return .= html_writer::label('Punktezahl', 'filter_defaultmark');
+$return .= html_writer::select(
+		array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'), 'filter_defaultmark_search', optional_param('filter_defaultmark_search', '=', PARAM_RAW), false);
+$return .= html_writer::empty_tag('input',
+		array('name' => 'filter_defaultmark', 'id' => 'filter_defaultmark', 'class' => 'searchoptions', 'value' => optional_param('filter_defaultmark', null, PARAM_TEXT)));
+
+$output = str_replace('<hr />', $return, $output);
+echo $output;
 echo '</div>';
 echo '</div>';
 echo '</div>';
@@ -592,7 +612,7 @@ if ($quiz_reordertool) {
     echo '<div class="editq">';
 }
 
-quiz_print_question_list($quiz, $thispageurl, true, $quiz_reordertool, $quiz_qbanktool,
+custom_quiz_print_question_list($quiz, $thispageurl, true, $quiz_reordertool, $quiz_qbanktool,
         $quizhasattempts, $defaultcategoryobj, $canaddquestion, $canaddrandom);
 echo '</div>';
 

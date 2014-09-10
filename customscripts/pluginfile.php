@@ -147,11 +147,11 @@ function custom_get_questions_category( $category, $noparent=false, $recurse=tru
 		$where[] = $DB->sql_like('questiontext', '?', false);
 	}
 	if ($q = trim(optional_param('filter_defaultmark', null, PARAM_INT))) {
-		$params[] = $q;
 		$defaultmark_search = optional_param('filter_defaultmark_search', null, PARAM_RAW);
 		if (!in_array($defaultmark_search, array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'))) {
 			$defaultmark_search = '=';
 		}
+		$params[] = $q;
 		$where[] = "defaultmark ".$defaultmark_search." ?";
 	}
 

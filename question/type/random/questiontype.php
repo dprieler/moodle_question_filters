@@ -233,8 +233,11 @@ class qtype_random extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
-        $available = $this->get_available_questions_from_category($questiondata->category,
-                !empty($questiondata->questiontext));
+		global $CFG;
+		require_once($CFG->customscripts . '/mod/quiz/editlib.php');
+		
+		$available = custom_get_available_questions_from_category_with_filter($questiondata->category,
+                !empty($questiondata->questiontext), $questiondata);
         shuffle($available);
 
         if ($forcequestionid !== null) {

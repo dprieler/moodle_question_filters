@@ -77,19 +77,19 @@ class local_question_filters_question_bank_search_condition  extends \core_quest
 		global $DB;
 		
 		if ($q = trim(optional_param('filter_name', null, PARAM_TEXT))) {
-			$this->params['name'] = '%'.$q.'%';
-			$this->where[] = $DB->sql_like('q.name', ':name', false);
+			$this->params['filer_name'] = '%'.$q.'%';
+			$this->where[] = $DB->sql_like('q.name', ':filer_name', false);
 		}
 		if ($q = trim(optional_param('filter_questiontext', null, PARAM_TEXT))) {
 			$this->params['questiontext'] = '%'.$q.'%';
 			$this->where[] = $DB->sql_like('q.questiontext', ':questiontext', false);
 		}
 		if ($q = trim(optional_param('filter_defaultmark', null, PARAM_INT))) {
-			$this->params['defaultmark'] = $q;
 			$defaultmark_search = optional_param('filter_defaultmark_search', null, PARAM_RAW);
 			if (!in_array($defaultmark_search, array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'))) {
 				$defaultmark_search = '=';
 			}
+			$this->params['defaultmark'] = $q;
 			$this->where[] = "q.defaultmark ".$defaultmark_search." :defaultmark";
 		}
 	}
