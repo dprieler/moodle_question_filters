@@ -41,10 +41,11 @@
  */
 
 
-require_once('../../config.php');
+// require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/quiz/editlib.php');
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 require_once($CFG->dirroot . '/question/category_class.php');
+require_once(dirname(__FILE__) . '/editlib.php');
 
 
 /**
@@ -52,6 +53,7 @@ require_once($CFG->dirroot . '/question/category_class.php');
  * (which is called from showbank())
  * Displays button in form with checkboxes for each question.
  */
+/*
 function module_specific_buttons($cmid, $cmoptions) {
     global $OUTPUT;
     $params = array(
@@ -64,11 +66,13 @@ function module_specific_buttons($cmid, $cmoptions) {
     }
     return html_writer::empty_tag('input', $params);
 }
+*/
 
 /**
  * Callback function called from question_list() function
  * (which is called from showbank())
  */
+/*
 function module_specific_controls($totalnumber, $recurse, $category, $cmid, $cmoptions) {
     global $OUTPUT;
     $out = '';
@@ -109,6 +113,7 @@ function module_specific_controls($totalnumber, $recurse, $category, $cmid, $cmo
     }
     return $out;
 }
+*/
 
 // These params are only passed from page request to request while we stay on
 // this page otherwise they would go in question_edit_setup.
@@ -595,7 +600,7 @@ echo '</div>';
 echo '</div>';
 
 if (!$quiz_reordertool && $canaddrandom) {
-    $randomform = new quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
+    $randomform = new custom_quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
     $randomform->set_data(array(
         'category' => $pagevars['cat'],
         'returnurl' => $thispageurl->out_as_local_url(false),
@@ -614,3 +619,5 @@ if (!$quiz_reordertool && $canaddrandom) {
     <?php
 }
 echo $OUTPUT->footer();
+
+exit;

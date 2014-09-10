@@ -24,10 +24,11 @@
  */
 
 
-require_once('../../config.php');
+//require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/quiz/editlib.php');
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 require_once($CFG->dirroot . '/question/category_class.php');
+require_once(dirname(__FILE__) . '/editlib.php');
 
 list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
         question_edit_setup('editq', '/mod/quiz/addrandom.php', true);
@@ -73,7 +74,7 @@ $qcobject = new question_category_object(
     null,
     $contexts->having_cap('moodle/question:add'));
 
-$mform = new quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
+$mform = new custom_quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
 
 if ($mform->is_cancelled()) {
     redirect($returnurl);
@@ -124,3 +125,4 @@ echo $OUTPUT->heading(get_string('addrandomquestiontoquiz', 'quiz', $quizname), 
 $mform->display();
 echo $OUTPUT->footer();
 
+exit;
