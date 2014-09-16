@@ -574,23 +574,8 @@ function custom_get_available_questions_from_category_with_filter($categoryid, $
 	$params = array();
 	$where = array('1 = 1');
 
-	if ($q = $filter->filter_name) {
-		$params['filter_name'] = '%'.$q.'%';
-		$where[] = $DB->sql_like('name', ':filter_name', false);
-	}
-	if ($q = $filter->filter_questiontext) {
-		$params['questiontext'] = '%'.$q.'%';
-		$where[] = $DB->sql_like('questiontext', ':questiontext', false);
-	}
-	if ($q = $filter->filter_defaultmark) {
-		$defaultmark_search = $filter->filter_defaultmark_search;
-		if (!in_array($defaultmark_search, array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'))) {
-			$defaultmark_search = '=';
-		}
-		$params['defaultmark'] = $q;
-		$where[] = "defaultmark ".$defaultmark_search." :defaultmark";
-	}
-		
+	local_question_filters_get_filter_sql($params, $where, $filter, true, false);
+
 	$questionids = question_bank::get_finder()->get_questions_from_categories(
 			$categoryids, 'qtype NOT IN (' . "'description','missingtype','random','randomsamatch'" . ') AND '.join(' and ', $where), $params);
 

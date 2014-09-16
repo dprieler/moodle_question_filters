@@ -35,6 +35,7 @@ $forcedownload = optional_param('forcedownload', 0, PARAM_BOOL);
 $preview = optional_param('preview', null, PARAM_ALPHANUM);
 
 require_once($CFG->dirroot . '/question/format/xml/format.php');
+require_once($CFG->dirroot . '/local/question_filters/lib.php');
 
 class custom_qformat_xml extends qformat_xml {
     public function exportprocess() {
@@ -136,26 +137,9 @@ function custom_get_questions_category( $category, $noparent=false, $recurse=tru
     // Get the list of questions for the category
     list($usql, $params) = $DB->get_in_or_equal($categorylist);
 	
-	$where = array('1 = 1');
+	local_question_filters_get_filter_sql($params, $npsql, null, false, false);
 
-	if ($q = trim(optional_param('filter_name', null, PARAM_TEXT))) {
-		$params[] = '%'.$q.'%';
-		$where[] = $DB->sql_like('name', '?', false);
-	}
-	if ($q = trim(optional_param('filter_questiontext', null, PARAM_TEXT))) {
-		$params[] = '%'.$q.'%';
-		$where[] = $DB->sql_like('questiontext', '?', false);
-	}
-	if ($q = trim(optional_param('filter_defaultmark', null, PARAM_INT))) {
-		$defaultmark_search = optional_param('filter_defaultmark_search', null, PARAM_RAW);
-		if (!in_array($defaultmark_search, array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'))) {
-			$defaultmark_search = '=';
-		}
-		$params[] = $q;
-		$where[] = "defaultmark ".$defaultmark_search." ?";
-	}
-
-	$questions = $DB->get_records_select('question', "category $usql $npsql and ".join(' and ', $where), $params, 'qtype, name');
+	$questions = $DB->get_records_select('question', "category $usql $npsql", $params, 'qtype, name');
 
     // Iterate through questions, getting stuff we need
     $qresults = array();
