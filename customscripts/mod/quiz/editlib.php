@@ -2,26 +2,6 @@
 
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 
-class custom_quiz_add_random_form extends quiz_add_random_form {
-    protected function definition() {
-
-        global $CFG, $DB;
-        $mform =& $this->_form;
-
-		$mform->addElement('header', 'categoryheader', 'Special Filters');
-
-		$mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
-        $mform->setType('filter_name', PARAM_TEXT);
-        $mform->addElement('text', 'filter_questiontext', 'Fragetext', 'maxlength="254" size="50"');
-        $mform->setType('filter_questiontext', PARAM_TEXT);
-        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter', array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
-        $mform->addElement('text', 'filter_defaultmark', 'Punktezahl', 'maxlength="254" size="50"');
-        $mform->setType('filter_defaultmark', PARAM_TEXT);
-
-		parent::definition();
-	}
-}
-
 function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $number,
         $includesubcategories) {
     global $DB;
@@ -70,7 +50,7 @@ function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $numbe
         $form->stamp = make_unique_id_code(); // Set the unique code (not to be changed).
         $question = new stdClass();
         $question->qtype = 'random';
-        $question = custom_question_bank::get_qtype('random')->save_question($question, $form);
+        $question = question_bank::get_qtype('random')->save_question($question, $form);
         if (!isset($question->id)) {
             print_error('cannotinsertrandomquestion', 'quiz');
         }
@@ -527,14 +507,16 @@ function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quiz_qban
     $questioncount = count($questionids);
 
 	echo '<div>';
-	echo '<b>Filters:</b>'.'<br>';
-	if ($question->filter_name)
-		echo 'Name: '.$question->filter_name.'<br>';
-	if ($question->filter_questiontext)
-		echo 'Text: '.$question->filter_questiontext.'<br>';
-	if ($question->filter_defaultmark)
-		echo 'Mark: '.$question->filter_defaultmark_search.' '.$question->filter_defaultmark.'<br>';
-	echo '</div>';
+	if ($question->filter_name || $question->filter_questiontext || $question->filter_defaultmark) {
+		echo '<b>Filters:</b>'.'<br>';
+		if ($question->filter_name)
+			echo 'Name: '.$question->filter_name.'<br>';
+		if ($question->filter_questiontext)
+			echo 'Text: '.$question->filter_questiontext.'<br>';
+		if ($question->filter_defaultmark)
+			echo 'Mark: '.$question->filter_defaultmark_search.' '.$question->filter_defaultmark.'<br>';
+		echo '</div>';
+	}
     echo '<div class="randomquestionqlist">';
     if ($questioncount == 0) {
         // No questions in category, give an error plus instructions.
