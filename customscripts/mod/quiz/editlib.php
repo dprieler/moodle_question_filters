@@ -489,8 +489,8 @@ function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quiz_qban
             $category->id, $question->questiontext == '1', $filter);
     $questioncount = count($questionids);
 
-	echo '<div>';
 	if ($filter && ($filter->filter_name || $filter->filter_questiontext || $filter->filter_defaultmark || $filter->filter_defaultmark)) {
+		echo '<div>';
 		echo '<b>Filters:</b>'.'<br>';
 		if ($filter->filter_name)
 			echo 'Name: '.$filter->filter_name.'<br>';
