@@ -1,6 +1,28 @@
 <?php
 
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
+require_once($CFG->dirroot . '/local/question_filters/lib.php');
+
+class custom_quiz_add_random_form extends quiz_add_random_form {
+    protected function definition() {
+
+        global $CFG, $DB;
+        $mform =& $this->_form;
+
+		$mform->addElement('header', 'categoryheader', 'Special Filters');
+		$mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
+        $mform->setType('filter_name', PARAM_TEXT);
+        $mform->addElement('text', 'filter_questiontext', 'Fragetext', 'maxlength="254" size="50"');
+        $mform->setType('filter_questiontext', PARAM_TEXT);
+        $mform->addElement('text', 'filter_meta_field1', 'Metadatenfeld', 'maxlength="254" size="50"');
+        $mform->setType('filter_meta_field1', PARAM_TEXT);
+        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter', array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
+        $mform->addElement('text', 'filter_defaultmark', 'Punktezahl', 'maxlength="254" size="50"');
+        $mform->setType('filter_defaultmark', PARAM_TEXT);
+
+		parent::definition();
+	}
+}
 
 function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $number,
         $includesubcategories) {
@@ -489,7 +511,7 @@ function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quiz_qban
             $category->id, $question->questiontext == '1', $filter);
     $questioncount = count($questionids);
 
-	if ($filter && ($filter->filter_name || $filter->filter_questiontext || $filter->filter_defaultmark || $filter->filter_defaultmark)) {
+	if ($filter && ($filter->filter_name || $filter->filter_questiontext || $filter->filter_meta_field1 || $filter->filter_defaultmark !== null)) {
 		echo '<div>';
 		echo '<b>Filters:</b>'.'<br>';
 		if ($filter->filter_name)
@@ -498,7 +520,7 @@ function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quiz_qban
 			echo 'Text: '.$filter->filter_questiontext.'<br>';
 		if ($filter->filter_meta_field1)
 			echo 'Metadatenfeld: '.$filter->filter_meta_field1.'<br>';
-		if ($filter->filter_defaultmark)
+		if ($filter->filter_defaultmark !== null)
 			echo 'Mark: '.$filter->filter_defaultmark_search.' '.$filter->filter_defaultmark.'<br>';
 		echo '</div>';
 	}

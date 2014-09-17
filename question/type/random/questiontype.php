@@ -150,7 +150,7 @@ class qtype_random extends question_type {
     }
 
     public function save_question($question, $form) {
-        $form->name = '';
+		$form->name = '';
 
         // In case someone set the question text to true/false in the old style, set it properly.
         if ($form->questiontext['text']) {

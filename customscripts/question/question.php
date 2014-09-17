@@ -272,11 +272,18 @@ if ($mform->is_cancelled()) {
     // Purge this question from the cache.
     question_bank::notify_question_edited($question->id);
 	
-	local_question_filters_save_question_extra_fields((object)array(
-		'questionid' => $question->id,
-		'meta_field1' => $fromform->meta_field1
-	));
+	if ($question->qtype == 'random') {
+		$filter = local_question_filters_get_filter_from_form();
+		$filter->questionid = $question->id;
 
+		local_question_filters_save_question_extra_fields($filter);
+	} else {
+		local_question_filters_save_question_extra_fields((object)array(
+			'questionid' => $question->id,
+			'meta_field1' => $fromform->meta_field1
+		));
+	}
+	
     // If we are saving and continuing to edit the question.
     if (!empty($fromform->updatebutton)) {
         $url->param('id', $question->id);

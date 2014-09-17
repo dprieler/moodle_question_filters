@@ -624,7 +624,7 @@ echo '</div>';
 echo '</div>';
 
 if (!$quiz_reordertool && $canaddrandom) {
-    $randomform = new quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
+    $randomform = new custom_quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
     $randomform->set_data(array(
         'category' => $pagevars['cat'],
         'returnurl' => $thispageurl->out_as_local_url(false),

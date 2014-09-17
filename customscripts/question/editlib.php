@@ -70,8 +70,8 @@ class custom_question_bank_question_meta_field1_column extends question_bank_row
 
     protected function display_content($question, $rowclasses) {
 		$extra_fields = local_question_filters_get_question_extra_fields($question->id);
-		if ($extra_fields) {
-			echo clean_param($extra_fields->meta_field1, PARAM_TEXT);
+		if ($extra_fields && ($f = trim(clean_param($extra_fields->meta_field1, PARAM_TEXT)))) {
+			echo 'Metadatenfeld: '.$f;
 		}
     }
 
