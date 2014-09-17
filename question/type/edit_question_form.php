@@ -182,6 +182,10 @@ abstract class question_edit_form extends question_wizard_form {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
 
+        $mform->addElement('text', 'meta_field1', 'Metadatenfeld',
+                array('size' => 50, 'maxlength' => 255));
+        $mform->setType('meta_field1', PARAM_TEXT);
+
         $mform->addElement('editor', 'questiontext', get_string('questiontext', 'question'),
                 array('rows' => 15), $this->editoroptions);
         $mform->setType('questiontext', PARAM_RAW);
