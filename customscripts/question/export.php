@@ -72,6 +72,7 @@ if ($from_form = $export_form->get_data()) {
 
 	$export_url->param('filter_name', $from_form->filter_name);
 	$export_url->param('filter_questiontext', $from_form->filter_questiontext);
+	$export_url->param('filter_meta_field1', $from_form->filter_meta_field1);
 	$export_url->param('filter_defaultmark_search', $from_form->filter_defaultmark_search);
 	$export_url->param('filter_defaultmark', $from_form->filter_defaultmark);
 

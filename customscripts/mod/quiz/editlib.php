@@ -59,28 +59,10 @@ function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $numbe
     }
 	
 	foreach ($recheckQuestions as $question) {
-		$form = new stdClass();
-		$form->id = $question->id;
+		$filter = local_question_filters_get_filter_from_form();
+		$filter->questionid = $question->id;
 
-		if ($q = trim(optional_param('filter_name', null, PARAM_TEXT))) {
-			$form->filter_name = $q;
-		} else $form->filter_name = '';
-		if ($q = trim(optional_param('filter_questiontext', null, PARAM_TEXT))) {
-			$form->filter_questiontext = $q;
-		} else $form->filter_questiontext = '';
-		if ($q = trim(optional_param('filter_defaultmark', null, PARAM_INT))) {
-			$defaultmark_search = optional_param('filter_defaultmark_search', null, PARAM_RAW);
-			if (!in_array($defaultmark_search, array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'))) {
-				$defaultmark_search = '=';
-			}
-			$form->filter_defaultmark = $q;
-			$form->filter_defaultmark_search = $defaultmark_search;
-		} else {
-			$form->filter_defaultmark = '';
-			$form->filter_defaultmark_search = '';
-		}
-		
-		$DB->update_record('question', $form);
+		local_question_filters_save_question_extra_fields($filter);
 	}
 }
 
@@ -502,19 +484,22 @@ function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quiz_qban
             quiz_question_preview_button($quiz, $question, true) . '</span>';
     echo '</div>';
 
-    $questionids = custom_get_available_questions_from_category_with_filter(
-            $category->id, $question->questiontext == '1', $question);
+    $filter = local_question_filters_get_question_extra_fields($question->id);
+	$questionids = custom_get_available_questions_from_category_with_filter(
+            $category->id, $question->questiontext == '1', $filter);
     $questioncount = count($questionids);
 
 	echo '<div>';
-	if ($question->filter_name || $question->filter_questiontext || $question->filter_defaultmark) {
+	if ($filter && ($filter->filter_name || $filter->filter_questiontext || $filter->filter_defaultmark || $filter->filter_defaultmark)) {
 		echo '<b>Filters:</b>'.'<br>';
-		if ($question->filter_name)
-			echo 'Name: '.$question->filter_name.'<br>';
-		if ($question->filter_questiontext)
-			echo 'Text: '.$question->filter_questiontext.'<br>';
-		if ($question->filter_defaultmark)
-			echo 'Mark: '.$question->filter_defaultmark_search.' '.$question->filter_defaultmark.'<br>';
+		if ($filter->filter_name)
+			echo 'Name: '.$filter->filter_name.'<br>';
+		if ($filter->filter_questiontext)
+			echo 'Text: '.$filter->filter_questiontext.'<br>';
+		if ($filter->filter_meta_field1)
+			echo 'Metadatenfeld: '.$filter->filter_meta_field1.'<br>';
+		if ($filter->filter_defaultmark)
+			echo 'Mark: '.$filter->filter_defaultmark_search.' '.$filter->filter_defaultmark.'<br>';
 		echo '</div>';
 	}
     echo '<div class="randomquestionqlist">';

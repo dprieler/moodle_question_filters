@@ -27,9 +27,16 @@
 // require_once(dirname(__FILE__) . '/../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 require_once(dirname(__FILE__) . '/editlib.php');
+require_once($CFG->dirroot . '/local/question_filters/lib.php');
 
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
         question_edit_setup('questions', '/question/edit.php');
+
+$filter = local_question_filters_get_filter_from_form();
+foreach ($filter as $k => $v) {
+	if ($v) $thispageurl->param($k, $v);
+}
+
 
 $url = new moodle_url($thispageurl);
 if (($lastchanged = optional_param('lastchanged', 0, PARAM_INT)) !== 0) {
