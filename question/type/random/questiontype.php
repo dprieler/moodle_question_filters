@@ -236,8 +236,9 @@ class qtype_random extends question_type {
 		global $CFG;
 		require_once($CFG->customscripts . '/mod/quiz/editlib.php');
 		
+		$filter = local_question_filters_get_question_extra_fields($questiondata->id);
 		$available = custom_get_available_questions_from_category_with_filter($questiondata->category,
-                !empty($questiondata->questiontext), $questiondata);
+                !empty($questiondata->questiontext), $filter);
         shuffle($available);
 
         if ($forcequestionid !== null) {
