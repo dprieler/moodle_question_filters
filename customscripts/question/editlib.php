@@ -16,6 +16,20 @@ class custom_question_bank_view extends question_bank_view {
 		$columns[] = 'meta_field1';
 		return $columns;
 	}
+
+    protected function display_question_list($contexts, $pageurl, $categoryandcontext,
+            $cm = null, $recurse=1, $page=0, $perpage=100, $showhidden=false,
+            $showquestiontext = false, $addcontexts = array()) {
+
+		ob_start();
+		$ret = parent::display_question_list($contexts, $pageurl, $categoryandcontext,
+            $cm, $recurse, $page, $perpage, $showhidden,
+            $showquestiontext, $addcontexts);
+		$output = ob_get_clean();
+		echo str_replace('<div class="categoryquestionscontainer">', '<div class="categoryquestionscontainer">'.
+			'Number of Questions found: '.$this->get_question_count(), $output);
+		return $ret;
+	}
 }
 
 
