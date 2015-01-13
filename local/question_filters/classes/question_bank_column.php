@@ -34,15 +34,6 @@ class local_filter_questions_question_bank_column extends \core_question\bank\co
         }
     }
 
-    /*
-    public function get_extra_joins() {
-        return array('tags' => 'LEFT JOIN {tag_instance} tagi ON tagi.itemid = q.id LEFT JOIN {tag} ON {tag}.id = tagi.tagid');
-        return array('tags' = "JOIN (SELECT itemid, COUNT(*) as tagcount FROM mdl_tag_instance WHERE tagid IN (2, 9) GROUP BY itemid) tc ON tc.itemid=q.id AND tagcount=2
-                              ");
-        // MS SQL: SELECT COUNT(*) FROM (VALUES(1),(3),(5)) AS D(val);
-    }
-    */
-
     public function get_extra_joins() {
         return array();
     }
@@ -61,57 +52,8 @@ class local_filter_questions_question_bank_column extends \core_question\bank\co
         */
     }
 
-    /**
-     * Can this column be sorted on? You can return either:
-     *  + false for no (the default),
-     *  + a field name, if sorting this column corresponds to sorting on that datbase field.
-     *  + an array of subnames to sort on as follows
-     *  return array(
-     *      'firstname' => array('field' => 'uc.firstname', 'title' => get_string('firstname')),
-     *      'lastname' => array('field' => 'uc.lastname', 'field' => get_string('lastname')),
-     *  );
-     * As well as field, and field, you can also add 'revers' => 1 if you want the default sort
-     * order to be DESC.
-     * @return mixed as above.
-     */
     public function is_sortable() {
         return 'q.timemodified';
         // return array('timemodified' => array('field' => 'q.timemodified', 'title' =>  $this->get_title()) );
     }
 }
-
-/*
-
-    public function display_header() {
-        // echo "displaying header for name: " . $this->get_name() . "title: " . $this->get_title() . ". Sortable: " . $this->is_sortable() . "<br />\n";
-        echo '<th class="header ' . $this->get_classes() . '" scope="col">';
-        $sortable = $this->is_sortable();
-        $name = $this->get_name();
-        $title = $this->get_title();
-        $tip = $this->get_title_tip();
-        if (is_array($sortable)) {
-            if ($title) {
-                echo '<div class="title">' . $title . '</div>';
-            }
-            $links = array();
-            foreach ($sortable as $subsort => $details) {
-                $links[] = $this->make_sort_link($name . '_' . $subsort,
-                        $details['title'], '', !empty($details['reverse']));
-            }
-            echo '<div class="sorters">' . implode(' / ', $links) . '</div>';
-        } else if ($sortable) {
-            // echo $this->make_sort_link($name, $title, $tip);
-           echo $this->make_sort_link($sortable, $title, $tip);
-        } else {
-            if ($tip) {
-                echo '<span title="' . $tip . '">';
-            }
-            echo $title;
-            if ($tip) {
-                echo '</span>';
-            }
-        }
-        echo "</th>\n";
-    }
-*/
-
