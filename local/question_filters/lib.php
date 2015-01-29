@@ -23,11 +23,6 @@ function local_question_filters_get_question_bank_search_conditions() {
     return array(new local_question_filters_question_bank_search_condition());
 }
 
-function local_question_filters_question_bank_column_types($questionbankview) {
-    echo 'z'; exit;
-    return array('lastmodified' => new local_question_filters_question_bank_column($questionbankview));
-}
-
 function local_question_filters_get_question_extra_fields($questionid) {
     global $DB;
     return $DB->get_record('local_question_filters', array('questionid' => $questionid));
