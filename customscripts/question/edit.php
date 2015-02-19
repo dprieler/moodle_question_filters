@@ -24,7 +24,7 @@
  */
 
 
-// require_once(dirname(__FILE__) . '/../config.php');
+/* require_once(dirname(__FILE__) . '/../config.php'); */
 require_once($CFG->dirroot . '/question/editlib.php');
 require_once(dirname(__FILE__) . '/editlib.php');
 require_once($CFG->dirroot . '/local/question_filters/lib.php');
@@ -34,7 +34,9 @@ list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
 
 $filter = local_question_filters_get_filter_from_form();
 foreach ($filter as $k => $v) {
-	if ($v) $thispageurl->param($k, $v);
+    if ($v) {
+        $thispageurl->param($k, $v);
+    }
 }
 
 

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
+/*
  * Fallback page of /mod/quiz/edit.php add random question dialog,
  * for users who do not use javascript.
  *
@@ -24,7 +24,7 @@
  */
 
 
-//require_once('../../config.php');
+// require_once('../../config.php');
 require_once($CFG->dirroot . '/mod/quiz/editlib.php');
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 require_once($CFG->dirroot . '/question/category_class.php');
@@ -32,7 +32,7 @@ require_once($CFG->customscripts . '/mod/quiz/editlib.php');
 require_once($CFG->customscripts . '/question/editlib.php');
 
 list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
-        question_edit_setup('editq', '/mod/quiz/addrandom.php', true);
+    question_edit_setup('editq', '/mod/quiz/addrandom.php', true);
 
 // These params are only passed from page request to request while we stay on
 // this page otherwise they would go in question_edit_setup.
@@ -98,7 +98,7 @@ if ($data = $mform->get_data()) {
                 'It seems a form was submitted without any button being pressed???');
     }
 
-	custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, 1, $includesubcategories);
+    custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, 1, $includesubcategories);
     quiz_delete_previews($quiz);
     quiz_update_sumgrades($quiz);
     redirect($returnurl);

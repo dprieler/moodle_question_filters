@@ -24,7 +24,7 @@
  */
 
 
-// require_once(dirname(__FILE__) . '/../config.php');
+/* require_once(dirname(__FILE__) . '/../config.php'); */
 require_once($CFG->dirroot . '/question/editlib.php');
 require_once(dirname(__FILE__) . '/editlib.php');
 require_once(dirname(__FILE__) . '/export_form.php');
@@ -33,64 +33,64 @@ require_once($CFG->dirroot . '/question/format.php');
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
         question_edit_setup('export', '/question/export.php');
 
-// get display strings
+// Get display strings.
 $strexportquestions = get_string('exportquestions', 'question');
 
 list($catid, $catcontext) = explode(',', $pagevars['cat']);
 $category = $DB->get_record('question_categories', array("id" => $catid, 'contextid' => $catcontext), '*', MUST_EXIST);
 
-/// Header
+// Header.
 $PAGE->set_url($thispageurl);
 $PAGE->set_title($strexportquestions);
 $PAGE->set_heading($COURSE->fullname);
 echo $OUTPUT->header();
 
-$export_form = new custom_question_export_form($thispageurl,
+$exportform = new custom_question_export_form($thispageurl,
         array('contexts' => $contexts->having_one_edit_tab_cap('export'), 'defaultcategory' => $pagevars['cat']));
 
 
-if ($from_form = $export_form->get_data()) {
+if ($fromform = $exportform->get_data()) {
     $thiscontext = $contexts->lowest();
-    if (!is_readable("format/$from_form->format/format.php")) {
-        print_error('unknowformat', '', '', $from_form->format);
+    if (!is_readable("format/".$fromform->format."/format.php")) {
+        print_error('unknowformat', '', '', $fromform->format);
     }
     $withcategories = 'nocategories';
-    if (!empty($from_form->cattofile)) {
+    if (!empty($fromform->cattofile)) {
         $withcategories = 'withcategories';
     }
     $withcontexts = 'nocontexts';
-    if (!empty($from_form->contexttofile)) {
+    if (!empty($fromform->contexttofile)) {
         $withcontexts = 'withcontexts';
     }
 
-    $classname = 'qformat_' . $from_form->format;
+    $classname = 'qformat_' . $fromform->format;
     $qformat = new $classname();
     $filename = question_default_export_filename($COURSE, $category) .
             $qformat->export_file_extension();
-    $export_url = question_make_export_url($thiscontext->id, $category->id,
-            $from_form->format, $withcategories, $withcontexts, $filename);
+    $exporturl = question_make_export_url($thiscontext->id, $category->id,
+            $fromform->format, $withcategories, $withcontexts, $filename);
 
-	$export_url->param('filter_name', $from_form->filter_name);
-	$export_url->param('filter_questiontext', $from_form->filter_questiontext);
-	$export_url->param('filter_meta_field1', $from_form->filter_meta_field1);
-	$export_url->param('filter_defaultmark_search', $from_form->filter_defaultmark_search);
-	$export_url->param('filter_defaultmark', $from_form->filter_defaultmark);
+    $exporturl->param('filter_name', $fromform->filter_name);
+    $exporturl->param('filter_questiontext', $fromform->filter_questiontext);
+    $exporturl->param('filter_meta_field1', $fromform->filter_meta_field1);
+    $exporturl->param('filter_defaultmark_search', $fromform->filter_defaultmark_search);
+    $exporturl->param('filter_defaultmark', $fromform->filter_defaultmark);
 
-	echo $OUTPUT->box_start();
-    echo get_string('yourfileshoulddownload', 'question', $export_url->out());
+    echo $OUTPUT->box_start();
+    echo get_string('yourfileshoulddownload', 'question', $exporturl->out());
     echo $OUTPUT->box_end();
 
-    $PAGE->requires->js_function_call('document.location.replace', array($export_url->out(false)), false, 1);
+    $PAGE->requires->js_function_call('document.location.replace', array($exporturl->out(false)), false, 1);
 
     echo $OUTPUT->continue_button(new moodle_url('edit.php', $thispageurl->params()));
     echo $OUTPUT->footer();
     exit;
 }
 
-/// Display export form
+// Display export form.
 echo $OUTPUT->heading_with_help($strexportquestions, 'exportquestions', 'question');
 
-$export_form->display();
+$exportform->display();
 
 echo $OUTPUT->footer();
 

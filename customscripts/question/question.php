@@ -24,14 +24,14 @@
  */
 
 
-// require_once(dirname(__FILE__) . '/../config.php');
+/* require_once(dirname(__FILE__) . '/../config.php'); */
 require_once($CFG->dirroot . '/question/editlib.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->dirroot . '/local/question_filters/lib.php');
 
 // Read URL parameters telling us which question to edit.
-$id = optional_param('id', 0, PARAM_INT); // question id
+$id = optional_param('id', 0, PARAM_INT); // Question id.
 $makecopy = optional_param('makecopy', 0, PARAM_BOOL);
 $qtype = optional_param('qtype', '', PARAM_FILE);
 $categoryid = optional_param('category', 0, PARAM_INT);
@@ -93,11 +93,11 @@ if ($scrollpos) {
     $returnurl->param('scrollpos', $scrollpos);
 }
 
-if ($cmid){
+if ($cmid) {
     list($module, $cm) = get_module_from_cmid($cmid);
     require_login($cm->course, false, $cm);
     $thiscontext = context_module::instance($cmid);
-} elseif ($courseid) {
+} else if ($courseid) {
     require_login($courseid, false);
     $thiscontext = context_course::instance($courseid);
     $module = null;
@@ -116,13 +116,13 @@ if ($id) {
     if (!$question = $DB->get_record('question', array('id' => $id))) {
         print_error('questiondoesnotexist', 'question', $returnurl);
     }
-	
-	if ($extra_fields = local_question_filters_get_question_extra_fields($question->id)) {
-		$question = (object) array_merge((array) $extra_fields, (array) $question);
-	}
+
+    if ($extrafields = local_question_filters_get_question_extra_fields($question->id)) {
+        $question = (object) array_merge((array) $extrafields, (array) $question);
+    }
     get_question_options($question, true);
 
-} else if ($categoryid && $qtype) { // only for creating new questions
+} else if ($categoryid && $qtype) { // Only for creating new questions.
     $question = new stdClass();
     $question->category = $categoryid;
     $question->qtype = $qtype;
@@ -151,7 +151,7 @@ if (!$category = $DB->get_record('question_categories', array('id' => $question-
     print_error('categorydoesnotexist', 'question', $returnurl);
 }
 
-// Check permissions
+// Check permissions.
 $question->formoptions = new stdClass();
 
 $categorycontext = context::instance_by_id($category->contextid);
@@ -163,7 +163,7 @@ if ($id) {
     $question->formoptions->cansaveasnew = $addpermission &&
             (question_has_capability_on($question, 'view') || $question->formoptions->canedit);
     $question->formoptions->repeatelements = $question->formoptions->canedit || $question->formoptions->cansaveasnew;
-    $formeditable =  $question->formoptions->canedit || $question->formoptions->cansaveasnew || $question->formoptions->canmove;
+    $formeditable = $question->formoptions->canedit || $question->formoptions->cansaveasnew || $question->formoptions->canmove;
     if (!$formeditable) {
         question_require_capability_on($question, 'view');
     }
@@ -173,7 +173,7 @@ if ($id) {
         $question->beingcopied = true;
     }
 
-} else  { // creating a new question
+} else { // Creating a new question.
     $question->formoptions->canedit = question_has_capability_on($question, 'edit');
     $question->formoptions->canmove = (question_has_capability_on($question, 'move') && $addpermission);
     $question->formoptions->cansaveasnew = false;
@@ -192,17 +192,17 @@ if ($wizardnow !== '') {
 } else {
     $mform = $qtypeobj->create_editing_form('question.php', $question, $category, $contexts, $formeditable);
 }
-$toform = fullclone($question); // send the question object and a few more parameters to the form
+$toform = fullclone($question); // Send the question object and a few more parameters to the form.
 $toform->category = "$category->id,$category->contextid";
 $toform->scrollpos = $scrollpos;
-if ($formeditable && $id){
+if ($formeditable && $id) {
     $toform->categorymoveto = $toform->category;
 }
 
 $toform->appendqnumstring = $appendqnumstring;
 $toform->returnurl = $originalreturnurl;
 $toform->makecopy = $makecopy;
-if ($cm !== null){
+if ($cm !== null) {
     $toform->cmid = $cm->id;
     $toform->courseid = $cm->course;
 } else {
@@ -227,20 +227,20 @@ if ($mform->is_cancelled()) {
         $question->hidden = 0; // Copies should not be hidden.
     }
 
-    /// Process the combination of usecurrentcat, categorymoveto and category form
-    /// fields, so the save_question method only has to consider $fromform->category
+    // Process the combination of usecurrentcat, categorymoveto and category form
+    // fields, so the save_question method only has to consider $fromform->category.
     if (!empty($fromform->usecurrentcat)) {
-        // $fromform->category is the right category to save in.
+        $fll = 1; // A $fromform->category s the right category to save in.
     } else {
         if (!empty($fromform->categorymoveto)) {
             $fromform->category = $fromform->categorymoveto;
         } else {
-            // $fromform->category is the right category to save in.
+            $fll = 1; // A $fromform->category is the right category to save in.
         }
     }
 
-    /// If we are moving a question, check we have permission to move it from
-    /// whence it came. (Where we are moving to is validated by the form.)
+    // If we are moving a question, check we have permission to move it from
+    // whence it came. (Where we are moving to is validated by the form.)
     list($newcatid, $newcontextid) = explode(',', $fromform->category);
     if (!empty($question->id) && $newcatid != $question->category) {
         $contextid = $newcontextid;
@@ -271,19 +271,19 @@ if ($mform->is_cancelled()) {
 
     // Purge this question from the cache.
     question_bank::notify_question_edited($question->id);
-	
-	if ($question->qtype == 'random') {
-		$filter = local_question_filters_get_filter_from_form();
-		$filter->questionid = $question->id;
 
-		local_question_filters_save_question_extra_fields($filter);
-	} else {
-		local_question_filters_save_question_extra_fields((object)array(
-			'questionid' => $question->id,
-			'meta_field1' => $fromform->meta_field1
-		));
-	}
-	
+    if ($question->qtype == 'random') {
+        $filter = local_question_filters_get_filter_from_form();
+        $filter->questionid = $question->id;
+
+        local_question_filters_save_question_extra_fields($filter);
+    } else {
+        local_question_filters_save_question_extra_fields((object)array(
+            'questionid' => $question->id,
+            'meta_field1' => $fromform->meta_field1
+        ));
+    }
+
     // If we are saving and continuing to edit the question.
     if (!empty($fromform->updatebutton)) {
         $url->param('id', $question->id);
@@ -310,14 +310,14 @@ if ($mform->is_cancelled()) {
                 'returnurl' => $originalreturnurl,
                 'appendqnumstring' => $appendqnumstring,
                 'scrollpos' => $scrollpos);
-        if (isset($fromform->nextpageparam) && is_array($fromform->nextpageparam)){
-            //useful for passing data to the next page which is not saved in the database.
+        if (isset($fromform->nextpageparam) && is_array($fromform->nextpageparam)) {
+            // Useful for passing data to the next page which is not saved in the database.
             $nexturlparams += $fromform->nextpageparam;
         }
         $nexturlparams['id'] = $question->id;
         $nexturlparams['wizardnow'] = $fromform->wizard;
         $nexturl = new moodle_url('/question/question.php', $nexturlparams);
-        if ($cmid){
+        if ($cmid) {
             $nexturl->param('cmid', $cmid);
         } else {
             $nexturl->param('courseid', $COURSE->id);
@@ -332,17 +332,20 @@ if ($mform->is_cancelled()) {
     if ($cm !== null) {
         $strmodule = get_string('modulename', $cm->modname);
         $streditingmodule = get_string('editinga', 'moodle', $strmodule);
-        $PAGE->navbar->add(get_string('modulenameplural', $cm->modname), new moodle_url('/mod/'.$cm->modname.'/index.php', array('id'=>$cm->course)));
-        $PAGE->navbar->add(format_string($module->name), new moodle_url('/mod/'.$cm->modname.'/view.php', array('id'=>$cm->id)));
-        if (stripos($returnurl, "$CFG->wwwroot/mod/{$cm->modname}/view.php")!== 0){
-            //don't need this link if returnurl returns to view.php
+        $PAGE->navbar->add(get_string('modulenameplural', $cm->modname),
+                            new moodle_url('/mod/'.$cm->modname.'/index.php', array('id' => $cm->course)));
+        $PAGE->navbar->add(format_string($module->name), new moodle_url('/mod/'.$cm->modname.'/view.php', array('id' => $cm->id)));
+        if (stripos($returnurl, "$CFG->wwwroot/mod/{$cm->modname}/view.php") !== 0) {
+            // Don't need this link if returnurl returns to view.php.
             $PAGE->navbar->add($streditingmodule, $returnurl);
         }
         $PAGE->navbar->add($streditingquestion);
         echo $OUTPUT->header();
 
     } else {
-        $strediting = '<a href="edit.php?courseid='.$COURSE->id.'">'.get_string('editquestions', 'question').'</a> -> '.$streditingquestion;
+        $strediting = '<a href="edit.php?courseid='.$COURSE->id.'">'.
+                    get_string('editquestions', 'question').
+                    '</a> -> '.$streditingquestion;
         $PAGE->navbar->add(get_string('editquestions', 'question'), $returnurl);
         $PAGE->navbar->add($streditingquestion);
         echo $OUTPUT->header();

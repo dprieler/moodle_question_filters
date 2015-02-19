@@ -53,14 +53,15 @@ class qtype_random_edit_form extends question_edit_form {
         $mform->addElement('advcheckbox', 'questiontext[text]',
                 get_string('includingsubcategories', 'qtype_random'), null, null, array(0, 1));
 
-		$mform->addElement('header', 'categoryheader', 'Special Filters');
-		$mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
+        $mform->addElement('header', 'categoryheader', 'Special Filters');
+        $mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
         $mform->setType('filter_name', PARAM_TEXT);
         $mform->addElement('text', 'filter_questiontext', 'Fragetext', 'maxlength="254" size="50"');
         $mform->setType('filter_questiontext', PARAM_TEXT);
         $mform->addElement('text', 'filter_meta_field1', 'Metadatenfeld', 'maxlength="254" size="50"');
         $mform->setType('filter_meta_field1', PARAM_TEXT);
-        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter', array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
+        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter',
+                            array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
         $mform->addElement('text', 'filter_defaultmark', 'Punktezahl', 'maxlength="254" size="50"');
         $mform->setType('filter_defaultmark', PARAM_TEXT);
 

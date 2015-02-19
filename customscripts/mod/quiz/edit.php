@@ -41,14 +41,14 @@
  */
 
 
-// require_once('../../config.php');
+/* require_once('../../config.php');*/
 require_once($CFG->dirroot . '/mod/quiz/editlib.php');
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 require_once($CFG->dirroot . '/question/category_class.php');
 require_once($CFG->customscripts . '/mod/quiz/editlib.php');
 
 
-/**
+/*
  * Callback function called from question_list() function
  * (which is called from showbank())
  * Displays button in form with checkboxes for each question.
@@ -68,7 +68,7 @@ function module_specific_buttons($cmid, $cmoptions) {
 }
 */
 
-/**
+/*
  * Callback function called from question_list() function
  * (which is called from showbank())
  */
@@ -117,8 +117,8 @@ function module_specific_controls($totalnumber, $recurse, $category, $cmid, $cmo
 
 // These params are only passed from page request to request while we stay on
 // this page otherwise they would go in question_edit_setup.
-$quiz_reordertool = optional_param('reordertool', -1, PARAM_BOOL);
-$quiz_qbanktool = optional_param('qbanktool', -1, PARAM_BOOL);
+$quizreordertool = optional_param('reordertool', -1, PARAM_BOOL);
+$quizqbanktool = optional_param('qbanktool', -1, PARAM_BOOL);
 $scrollpos = optional_param('scrollpos', '', PARAM_INT);
 
 list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
@@ -127,18 +127,18 @@ list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
 $defaultcategoryobj = question_make_default_categories($contexts->all());
 $defaultcategory = $defaultcategoryobj->id . ',' . $defaultcategoryobj->contextid;
 
-if ($quiz_qbanktool > -1) {
-    $thispageurl->param('qbanktool', $quiz_qbanktool);
-    set_user_preference('quiz_qbanktool_open', $quiz_qbanktool);
+if ($quizqbanktool > -1) {
+    $thispageurl->param('qbanktool', $quizqbanktool);
+    set_user_preference('quiz_qbanktool_open', $quizqbanktool);
 } else {
-    $quiz_qbanktool = get_user_preferences('quiz_qbanktool_open', 0);
+    $quizqbanktool = get_user_preferences('quiz_qbanktool_open', 0);
 }
 
-if ($quiz_reordertool > -1) {
-    $thispageurl->param('reordertool', $quiz_reordertool);
-    set_user_preference('quiz_reordertab', $quiz_reordertool);
+if ($quizreordertool > -1) {
+    $thispageurl->param('reordertool', $quizreordertool);
+    set_user_preference('quiz_reordertab', $quizreordertool);
 } else {
-    $quiz_reordertool = get_user_preferences('quiz_reordertab', 0);
+    $quizreordertool = get_user_preferences('quiz_reordertab', 0);
 }
 
 $canaddrandom = $contexts->have_cap('moodle/question:useall');
@@ -171,7 +171,7 @@ $params = array(
 $event = \mod_quiz\event\edit_page_viewed::create($params);
 $event->trigger();
 
-// Process commands ============================================================
+// Process commands ============================================================.
 
 // Get the list of question ids had their check-boxes ticked.
 $selectedslots = array();
@@ -432,7 +432,7 @@ if (optional_param('savechanges', false, PARAM_BOOL) && confirm_sesskey()) {
 
 $questionbank->process_actions($thispageurl, $cm);
 
-// End of process commands =====================================================
+// End of process commands =====================================================.
 
 $PAGE->requires->skip_link_to('questionbank',
         get_string('skipto', 'access', get_string('questionbank', 'question')));
@@ -470,7 +470,7 @@ $module = array(
 $PAGE->requires->js_init_call('quiz_edit_init', null, false, $module);
 
 // Print the tabs to switch mode.
-if ($quiz_reordertool) {
+if ($quizreordertool) {
     $currenttab = 'reorder';
 } else {
     $currenttab = 'edit';
@@ -483,7 +483,7 @@ $tabs = array(array(
 ));
 print_tabs($tabs, $currenttab);
 
-if ($quiz_qbanktool) {
+if ($quizqbanktool) {
     $bankclass = '';
     $quizcontentsclass = '';
 } else {
@@ -511,26 +511,39 @@ $questionbank->display('editq',
         $pagevars['qperpage'],
         $pagevars['cat'], $pagevars['recurse'], $pagevars['showhidden'],
         $pagevars['qbshowtext']);
-// add filter form
+// Add filter form.
 $output = ob_get_clean();
 $return = '';
 $return .= html_writer::label('Fragetitel', 'filter_name');
 $return .= html_writer::empty_tag('input',
-		array('name' => 'filter_name', 'id' => 'filter_name', 'class' => 'searchoptions', 'value' => optional_param('filter_name', null, PARAM_TEXT)));
+        array('name' => 'filter_name',
+            'id' => 'filter_name',
+            'class' => 'searchoptions',
+            'value' => optional_param('filter_name', null, PARAM_TEXT)));
 
 $return .= html_writer::label('Fragetext', 'filter_questiontext');
 $return .= html_writer::empty_tag('input',
-		array('name' => 'filter_questiontext', 'id' => 'filter_questiontext', 'class' => 'searchoptions', 'value' => optional_param('filter_questiontext', null, PARAM_TEXT)));
+        array('name' => 'filter_questiontext',
+                'id' => 'filter_questiontext',
+                'class' => 'searchoptions',
+                'value' => optional_param('filter_questiontext', null, PARAM_TEXT)));
 
 $return .= html_writer::label('Metadatenfeld', 'filter_meta_field1');
 $return .= html_writer::empty_tag('input',
-		array('name' => 'filter_meta_field1', 'id' => 'filter_meta_field1', 'class' => 'searchoptions', 'value' => optional_param('filter_meta_field1', null, PARAM_TEXT)));
+        array('name' => 'filter_meta_field1',
+                'id' => 'filter_meta_field1',
+                'class' => 'searchoptions',
+                'value' => optional_param('filter_meta_field1', null, PARAM_TEXT)));
 
 $return .= html_writer::label('Punktezahl', 'filter_defaultmark');
 $return .= html_writer::select(
-		array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'), 'filter_defaultmark_search', optional_param('filter_defaultmark_search', '=', PARAM_RAW), false);
+        array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'),
+                'filter_defaultmark_search', optional_param('filter_defaultmark_search', '=', PARAM_RAW), false);
 $return .= html_writer::empty_tag('input',
-		array('name' => 'filter_defaultmark', 'id' => 'filter_defaultmark', 'class' => 'searchoptions', 'value' => optional_param('filter_defaultmark', null, PARAM_TEXT)));
+        array('name' => 'filter_defaultmark',
+                'id' => 'filter_defaultmark',
+                'class' => 'searchoptions',
+                'value' => optional_param('filter_defaultmark', null, PARAM_TEXT)));
 
 $output = str_replace('<hr />', $return, $output);
 echo $output;
@@ -548,14 +561,14 @@ if ($quiz->shufflequestions) {
     $repaginatingdisabledhtml = '';
     $repaginatingdisabled = false;
 }
-if ($quiz_reordertool) {
+if ($quizreordertool) {
     echo '<div class="repaginatecommand"><button id="repaginatecommand" ' .
             $repaginatingdisabledhtml.'>'.
             get_string('repaginatecommand', 'quiz').'...</button>';
     echo '</div>';
 }
 
-if ($quiz_reordertool) {
+if ($quizreordertool) {
     echo $OUTPUT->heading_with_help(get_string('orderingquizx', 'quiz', format_string($quiz->name)),
             'orderandpaging', 'quiz');
 } else {
@@ -583,7 +596,7 @@ if (!empty($notifystrings)) {
     echo $OUTPUT->box('<p>' . implode('</p><p>', $notifystrings) . '</p>', 'statusdisplay');
 }
 
-if ($quiz_reordertool) {
+if ($quizreordertool) {
     $perpage = array();
     $perpage[0] = get_string('allinone', 'quiz');
     for ($i = 1; $i <= 50; ++$i) {
@@ -610,20 +623,20 @@ if ($quiz_reordertool) {
     echo '</div></fieldset></form></div></div>';
 }
 
-if ($quiz_reordertool) {
+if ($quizreordertool) {
     echo '<div class="reorder">';
 } else {
     echo '<div class="editq">';
 }
 
-custom_quiz_print_question_list($quiz, $thispageurl, true, $quiz_reordertool, $quiz_qbanktool,
+custom_quiz_print_question_list($quiz, $thispageurl, true, $quizreordertool, $quizqbanktool,
         $quizhasattempts, $defaultcategoryobj, $canaddquestion, $canaddrandom);
 echo '</div>';
 
 // Close <div class="quizcontents">.
 echo '</div>';
 
-if (!$quiz_reordertool && $canaddrandom) {
+if (!$quizreordertool && $canaddrandom) {
     $randomform = new custom_quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
     $randomform->set_data(array(
         'category' => $pagevars['cat'],
