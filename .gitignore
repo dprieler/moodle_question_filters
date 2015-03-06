@@ -1,8 +1,0 @@
-*
-!.gitignore
-!/customscripts/
-!/customscripts/**
-!/local
-!/local/**
-/customscripts/untracked
-/local/readme.txt
