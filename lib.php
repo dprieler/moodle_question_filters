@@ -220,13 +220,15 @@ class local_question_filters_question_bank_search_condition  extends \core_quest
                 'class' => 'searchoptions',
                 'value' => optional_param('filter_questiontext', null, PARAM_TEXT)));
 
+        /*
         $return .= html_writer::label('Metadatenfeld', 'filter_meta_field1');
         $return .= html_writer::empty_tag('input',
             array('name' => 'filter_meta_field1',
                 'id' => 'filter_meta_field1',
                 'class' => 'searchoptions',
                 'value' => optional_param('filter_meta_field1', null, PARAM_TEXT)));
-
+        */
+        
         $return .= html_writer::label('Punktezahl', 'filter_defaultmark');
         $return .= html_writer::select(
             array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'),
