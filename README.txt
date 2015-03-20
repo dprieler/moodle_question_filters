@@ -31,8 +31,7 @@ First official publishing-date: January 2015 - from a project done at Donau Univ
 
 1) Save the zip file somewhere onto your local computer and extract all the files
 
-2) Transfer the folder qustion_filter to the local-directory of Moodle
-
+2) Transfer the folder qustion_filter to the "local" directory within your Moodle installation (eg. www/moodle27/local)
 
 3) Log in as 'administrator' and click on the 'Home' link
 
