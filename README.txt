@@ -3,7 +3,7 @@ question filter
 GTN-Solutions
 
 This plugin enables additional search option within questions in large question banks
-This block is fore Moodle 2.7+ versions, it will not work for versions below 2011120500
+This block is fore Moodle 2.2 and higher, it will not work for versions below 2011120500
 
 
 * question filter - Bugs, Feature Requests, and Improvements *
@@ -25,7 +25,7 @@ Hence, use this block at your own risk.
 
 * question filter - History *
 
-First official publishing-date: January 2015 - from a project done at Donau Universität Krems, idea and concept by Gerhard Schwed
+First official publishing-date: January 2015 - from a project done at Donau Universitï¿½t Krems, idea and concept by Gerhard Schwed
  
 * question filter - Installation *
 
