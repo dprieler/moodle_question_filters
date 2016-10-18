@@ -24,9 +24,10 @@
  */
 
 
-//require_once('../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/editlib.php');
+//require_once(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
+require_once($CFG->dirroot . '/question/editlib.php');
 require_once($CFG->dirroot . '/question/category_class.php');
 require_once($CFG->customscripts . '/mod/quiz/editlib.php');
 require_once($CFG->customscripts . '/question/editlib.php');
@@ -75,7 +76,8 @@ $qcobject = new question_category_object(
     null,
     $contexts->having_cap('moodle/question:add'));
 
-$mform = new custom_quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'), $contexts);
+$mform = new custom_quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'),
+                array('contexts' => $contexts, 'cat' => $pagevars['cat']));
 
 if ($mform->is_cancelled()) {
     redirect($returnurl);
@@ -98,7 +100,7 @@ if ($data = $mform->get_data()) {
                 'It seems a form was submitted without any button being pressed???');
     }
 
-	custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, 1, $includesubcategories);
+    custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $data->numbertoadd, $includesubcategories);
     quiz_delete_previews($quiz);
     quiz_update_sumgrades($quiz);
     redirect($returnurl);

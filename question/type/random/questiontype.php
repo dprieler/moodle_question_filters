@@ -86,7 +86,7 @@ class qtype_random extends question_type {
         list($qcsql, $qcparams) = $DB->get_in_or_equal($categorylist);
         // TODO use in_or_equal for $otherquestionsinuse and $this->manualqtypes.
         return $DB->record_exists_select('question',
-                "category $qcsql
+                "category {$qcsql}
                      AND parent = 0
                      AND hidden = 0
                      AND id NOT IN ($otherquestionsinuse)
@@ -113,13 +113,6 @@ class qtype_random extends question_type {
         }
         $this->excludedqtypes = implode(',', $excludedqtypes);
         $this->manualqtypes = implode(',', $manualqtypes);
-    }
-
-    public function display_question_editing_page($mform, $question, $wizardnow) {
-        global $OUTPUT;
-        $heading = $this->get_heading(empty($question->id));
-        echo $OUTPUT->heading_with_help($heading, 'pluginname', $this->plugin_name());
-        $mform->display();
     }
 
     public function get_question_options($question) {
@@ -150,7 +143,7 @@ class qtype_random extends question_type {
     }
 
     public function save_question($question, $form) {
-		$form->name = '';
+        $form->name = '';
 
         // In case someone set the question text to true/false in the old style, set it properly.
         if ($form->questiontext['text']) {
@@ -239,6 +232,8 @@ class qtype_random extends question_type {
 		$filter = local_question_filters_get_question_extra_fields($questiondata->id);
 		$available = custom_get_available_questions_from_category_with_filter($questiondata->category,
                 !empty($questiondata->questiontext), $filter);
+        //$available = $this->get_available_questions_from_category($questiondata->category,
+        //        !empty($questiondata->questiontext));
         shuffle($available);
 
         if ($forcequestionid !== null) {

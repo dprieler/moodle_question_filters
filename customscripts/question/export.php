@@ -27,7 +27,7 @@
 // require_once(dirname(__FILE__) . '/../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 require_once(dirname(__FILE__) . '/editlib.php');
-require_once(dirname(__FILE__) . '/export_form.php');
+require_once($CFG->dirroot . '/question/export_form.php');
 require_once($CFG->dirroot . '/question/format.php');
 
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
@@ -51,7 +51,7 @@ $export_form = new custom_question_export_form($thispageurl,
 
 if ($from_form = $export_form->get_data()) {
     $thiscontext = $contexts->lowest();
-    if (!is_readable("format/$from_form->format/format.php")) {
+    if (!is_readable("format/{$from_form->format}/format.php")) {
         print_error('unknowformat', '', '', $from_form->format);
     }
     $withcategories = 'nocategories';
@@ -70,17 +70,14 @@ if ($from_form = $export_form->get_data()) {
     $export_url = question_make_export_url($thiscontext->id, $category->id,
             $from_form->format, $withcategories, $withcontexts, $filename);
 
-	$export_url->param('filter_name', $from_form->filter_name);
-	$export_url->param('filter_questiontext', $from_form->filter_questiontext);
-	$export_url->param('filter_meta_field1', $from_form->filter_meta_field1);
-	$export_url->param('filter_defaultmark_search', $from_form->filter_defaultmark_search);
-	$export_url->param('filter_defaultmark', $from_form->filter_defaultmark);
-
-	echo $OUTPUT->box_start();
+    echo $OUTPUT->box_start();
     echo get_string('yourfileshoulddownload', 'question', $export_url->out());
     echo $OUTPUT->box_end();
 
-    $PAGE->requires->js_function_call('document.location.replace', array($export_url->out(false)), false, 1);
+    // Don't allow force download for behat site, as pop-up can't be handled by selenium.
+    if (!defined('BEHAT_SITE_RUNNING')) {
+        $PAGE->requires->js_function_call('document.location.replace', array($export_url->out(false)), false, 1);
+    }
 
     echo $OUTPUT->continue_button(new moodle_url('edit.php', $thispageurl->params()));
     echo $OUTPUT->footer();
