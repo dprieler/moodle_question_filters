@@ -206,28 +206,30 @@ class local_question_filters_question_bank_search_condition  extends \core_quest
      */
     public function display_options() {
         $return = '';
-        $return .= html_writer::label('Fragetitel', 'filter_name');
+        $return .= html_writer::label(get_string('questionname','question'), 'filter_name');
         $return .= html_writer::empty_tag('input',
             array('name' => 'filter_name',
                 'id' => 'filter_name',
                 'class' => 'searchoptions',
                 'value' => optional_param('filter_name', null, PARAM_TEXT)));
 
-        $return .= html_writer::label('Fragetext', 'filter_questiontext');
+        $return .= html_writer::label(get_string('questiontext','question'), 'filter_questiontext');
         $return .= html_writer::empty_tag('input',
             array('name' => 'filter_questiontext',
                 'id' => 'filter_questiontext',
                 'class' => 'searchoptions',
                 'value' => optional_param('filter_questiontext', null, PARAM_TEXT)));
 
+        /*
         $return .= html_writer::label('Metadatenfeld', 'filter_meta_field1');
         $return .= html_writer::empty_tag('input',
             array('name' => 'filter_meta_field1',
                 'id' => 'filter_meta_field1',
                 'class' => 'searchoptions',
                 'value' => optional_param('filter_meta_field1', null, PARAM_TEXT)));
-
-        $return .= html_writer::label('Punktezahl', 'filter_defaultmark');
+        */
+        
+        $return .= html_writer::label(get_string('defaultmark','question'), 'filter_defaultmark');
         $return .= html_writer::select(
             array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'),
                 'filter_defaultmark_search',

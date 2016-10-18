@@ -150,7 +150,7 @@ class qtype_random extends question_type {
     }
 
     public function save_question($question, $form) {
-        $form->name = '';
+		$form->name = '';
 
         // In case someone set the question text to true/false in the old style, set it properly.
         if ($form->questiontext['text']) {
@@ -233,11 +233,11 @@ class qtype_random extends question_type {
      *      selected, or null if no suitable question could be found.
      */
     public function choose_other_question($questiondata, $excludedquestions, $allowshuffle = true, $forcequestionid = null) {
-        global $CFG;
-        require_once($CFG->customscripts . '/mod/quiz/editlib.php');
-
-        $filter = local_question_filters_get_question_extra_fields($questiondata->id);
-        $available = custom_get_available_questions_from_category_with_filter($questiondata->category,
+		global $CFG;
+		require_once($CFG->customscripts . '/mod/quiz/editlib.php');
+		
+		$filter = local_question_filters_get_question_extra_fields($questiondata->id);
+		$available = custom_get_available_questions_from_category_with_filter($questiondata->category,
                 !empty($questiondata->questiontext), $filter);
         shuffle($available);
 

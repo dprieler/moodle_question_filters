@@ -47,7 +47,7 @@ class custom_question_export_form extends moodleform {
         $mform->addElement('header', 'fileformat', get_string('fileformat', 'question'));
         $fileformatnames = get_import_export_formats('export');
         $radioarray = array();
-        $i = 0;
+        $i = 0 ;
         foreach ($fileformatnames as $shortname => $fileformatname) {
             $currentgrp1 = array();
             $currentgrp1[] = $mform->createElement('radio', 'format', '', $fileformatname, $shortname);
@@ -57,7 +57,7 @@ class custom_question_export_form extends moodleform {
                 $mform->addHelpButton("formathelp[$i]", 'pluginname', 'qformat_' . $shortname);
             }
 
-            $i++;
+            $i++ ;
         }
         $mform->addRule("formathelp[0]", null, 'required', null, 'client');
 
@@ -76,19 +76,18 @@ class custom_question_export_form extends moodleform {
         $mform->setDefault('cattofile', 1);
         $mform->setDefault('contexttofile', 1);
 
-        $mform->addElement('header', 'categoryheader', 'Special Filters (only for Gift and Moodle XML format)');
-        $mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
+		$mform->addElement('header', 'categoryheader', 'Special Filters (only for Gift and Moodle XML format)');
+		$mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
         $mform->setType('filter_name', PARAM_TEXT);
         $mform->addElement('text', 'filter_questiontext', 'Fragetext', 'maxlength="254" size="50"');
         $mform->setType('filter_questiontext', PARAM_TEXT);
         $mform->addElement('text', 'filter_meta_field1', 'Metadatenfeld', 'maxlength="254" size="50"');
         $mform->setType('filter_meta_field1', PARAM_TEXT);
-        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter',
-                            array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
+        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter', array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
         $mform->addElement('text', 'filter_defaultmark', 'Punktezahl', 'maxlength="254" size="50"');
         $mform->setType('filter_defaultmark', PARAM_TEXT);
 
-        // Set a template for the format select elements.
+        // Set a template for the format select elements
         $renderer = $mform->defaultRenderer();
         $template = "{help} {element}\n";
         $renderer->setGroupElementTemplate($template, 'format');

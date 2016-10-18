@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,9 +25,9 @@
  */
 
 // Disable moodle specific debug messages and any errors in output.
-define('NO_DEBUG_DISPLAY', true);
+#define('NO_DEBUG_DISPLAY', true); // disabled by G. Schwed
 
-/* require_once('config.php'); */
+//require_once('config.php');
 require_once('lib/filelib.php');
 
 $relativepath = get_file_argument();
@@ -38,12 +39,12 @@ require_once($CFG->dirroot . '/question/format/gift/format.php');
 require_once($CFG->dirroot . '/local/question_filters/lib.php');
 
 class custom_qformat_gift extends qformat_gift {
-    // Custom_qformat_gift:exportprocess and custom_qformat_xml:exportprocess are the same!
+	// custom_qformat_gift:exportprocess and custom_qformat_xml:exportprocess are the same!
     public function exportprocess() {
         global $CFG, $OUTPUT, $DB, $USER;
 
-        // Get the questions (from database) in this category
-        // only get q's with no parents (no cloze subquestions specifically).
+        // get the questions (from database) in this category
+        // only get q's with no parents (no cloze subquestions specifically)
         if ($this->category) {
             $questions = custom_get_questions_category($this->category, true);
         } else {
@@ -52,39 +53,39 @@ class custom_qformat_gift extends qformat_gift {
 
         $count = 0;
 
-        // Results are first written into string (and then to a file)
-        // so create/initialize the string here.
+        // results are first written into string (and then to a file)
+        // so create/initialize the string here
         $expout = "";
 
-        // Track which category questions are in
+        // track which category questions are in
         // if it changes we will record the category change in the output
-        // file if selected. 0 means that it will get printed before the 1st question.
+        // file if selected. 0 means that it will get printed before the 1st question
         $trackcategory = 0;
 
-        // Iterate through questions.
+        // iterate through questions
         foreach ($questions as $question) {
-            // Used by file api.
+            // used by file api
             $contextid = $DB->get_field('question_categories', 'contextid',
                     array('id' => $question->category));
             $question->contextid = $contextid;
 
-            // Do not export hidden questions.
+            // do not export hidden questions
             if (!empty($question->hidden)) {
                 continue;
             }
 
-            // Do not export random questions.
+            // do not export random questions
             if ($question->qtype == 'random') {
                 continue;
             }
 
-            // Check if we need to record category change.
+            // check if we need to record category change
             if ($this->cattofile) {
                 if ($question->category != $trackcategory) {
                     $trackcategory = $question->category;
                     $categoryname = $this->get_category_path($trackcategory, $this->contexttofile);
 
-                    // Create 'dummy' question for category export.
+                    // create 'dummy' question for category export
                     $dummyquestion = new stdClass();
                     $dummyquestion->qtype = 'category';
                     $dummyquestion->category = $categoryname;
@@ -96,7 +97,7 @@ class custom_qformat_gift extends qformat_gift {
                 }
             }
 
-            // Export the question displaying message.
+            // export the question displaying message
             $count++;
 
             if (question_has_capability_on($question, 'view', $question->category)) {
@@ -104,28 +105,28 @@ class custom_qformat_gift extends qformat_gift {
             }
         }
 
-        // Continue path for following error checks.
+        // continue path for following error checks
         $course = $this->course;
         $continuepath = "$CFG->wwwroot/question/export.php?courseid=$course->id";
 
-        // Did we actually process anything.
-        if ($count == 0) {
+        // did we actually process anything
+        if ($count==0) {
             print_error('noquestions', 'question', $continuepath);
         }
 
-        // Final pre-process on exported data.
+        // final pre-process on exported data
         $expout = $this->presave_process($expout);
         return $expout;
     }
 }
 
 class custom_qformat_xml extends qformat_xml {
-    // Custom_qformat_gift:exportprocess and custom_qformat_xml:exportprocess are the same!
+	// custom_qformat_gift:exportprocess and custom_qformat_xml:exportprocess are the same!
     public function exportprocess() {
         global $CFG, $OUTPUT, $DB, $USER;
 
-        // Get the questions (from database) in this category
-        // only get q's with no parents (no cloze subquestions specifically).
+        // get the questions (from database) in this category
+        // only get q's with no parents (no cloze subquestions specifically)
         if ($this->category) {
             $questions = custom_get_questions_category($this->category, true);
         } else {
@@ -134,39 +135,39 @@ class custom_qformat_xml extends qformat_xml {
 
         $count = 0;
 
-        // Results are first written into string (and then to a file)
-        // so create/initialize the string here.
+        // results are first written into string (and then to a file)
+        // so create/initialize the string here
         $expout = "";
 
-        // Track which category questions are in
+        // track which category questions are in
         // if it changes we will record the category change in the output
-        // file if selected. 0 means that it will get printed before the 1st question.
+        // file if selected. 0 means that it will get printed before the 1st question
         $trackcategory = 0;
 
-        // Iterate through questions.
+        // iterate through questions
         foreach ($questions as $question) {
-            // Used by file api.
+            // used by file api
             $contextid = $DB->get_field('question_categories', 'contextid',
                     array('id' => $question->category));
             $question->contextid = $contextid;
 
-            // Do not export hidden questions.
+            // do not export hidden questions
             if (!empty($question->hidden)) {
                 continue;
             }
 
-            // Do not export random questions.
+            // do not export random questions
             if ($question->qtype == 'random') {
                 continue;
             }
 
-            // Check if we need to record category change.
+            // check if we need to record category change
             if ($this->cattofile) {
                 if ($question->category != $trackcategory) {
                     $trackcategory = $question->category;
                     $categoryname = $this->get_category_path($trackcategory, $this->contexttofile);
 
-                    // Create 'dummy' question for category export.
+                    // create 'dummy' question for category export
                     $dummyquestion = new stdClass();
                     $dummyquestion->qtype = 'category';
                     $dummyquestion->category = $categoryname;
@@ -178,7 +179,7 @@ class custom_qformat_xml extends qformat_xml {
                 }
             }
 
-            // Export the question displaying message.
+            // export the question displaying message
             $count++;
 
             if (question_has_capability_on($question, 'view', $question->category)) {
@@ -186,16 +187,16 @@ class custom_qformat_xml extends qformat_xml {
             }
         }
 
-        // Continue path for following error checks.
+        // continue path for following error checks
         $course = $this->course;
         $continuepath = "$CFG->wwwroot/question/export.php?courseid=$course->id";
 
-        // Did we actually process anything.
-        if ($count == 0) {
+        // did we actually process anything
+        if ($count==0) {
             print_error('noquestions', 'question', $continuepath);
         }
 
-        // Final pre-process on exported data.
+        // final pre-process on exported data
         $expout = $this->presave_process($expout);
         return $expout;
     }
@@ -204,29 +205,29 @@ class custom_qformat_xml extends qformat_xml {
 function custom_get_questions_category( $category, $noparent=false, $recurse=true, $export=true ) {
     global $DB;
 
-    // Build sql bit for $noparent.
+    // Build sql bit for $noparent
     $npsql = '';
     if ($noparent) {
-        $npsql = " and parent='0' ";
+      $npsql = " and parent='0' ";
     }
 
-    // Get list of categories.
+    // Get list of categories
     if ($recurse) {
         $categorylist = question_categorylist($category->id);
     } else {
         $categorylist = array($category->id);
     }
 
-    // Get the list of questions for the category.
+    // Get the list of questions for the category
     list($usql, $params) = $DB->get_in_or_equal($categorylist);
+	
+	local_question_filters_get_filter_sql($params, $npsql, null, false, false);
 
-    local_question_filters_get_filter_sql($params, $npsql, null, false, false);
+	$questions = $DB->get_records_select('question', "category $usql $npsql", $params, 'qtype, name');
 
-    $questions = $DB->get_records_select('question', "category $usql $npsql", $params, 'qtype, name');
-
-    // Iterate through questions, getting stuff we need.
+    // Iterate through questions, getting stuff we need
     $qresults = array();
-    foreach ($questions as $key => $question) {
+    foreach($questions as $key => $question) {
         $question->export_process = $export;
         $qtype = question_bank::get_qtype($question->qtype, false);
         if ($export && $qtype->name() == 'missingtype') {
@@ -251,31 +252,32 @@ function custom_question_pluginfile($course, $context, $component, $filearea, $a
 
         require_once($CFG->dirroot . '/question/editlib.php');
         $contexts = new question_edit_contexts($context);
-        // Check export capability.
+        // check export capability
         $contexts->require_one_edit_tab_cap('export');
-        $categoryid = (int)array_shift($args);
+        $category_id = (int)array_shift($args);
         $format      = array_shift($args);
         $cattofile   = array_shift($args);
         $contexttofile = array_shift($args);
         $filename    = array_shift($args);
 
-        // Load parent class for import/export.
+        // load parent class for import/export
         require_once($CFG->dirroot . '/question/format.php');
         require_once($CFG->dirroot . '/question/editlib.php');
         require_once($CFG->dirroot . '/question/format/' . $format . '/format.php');
 
-        if (($classname = 'custom_qformat_' . $format) && class_exists($classname)) {
-            $fll = 1;// Ok.
-        } else {
-            $classname = 'qformat_' . $format;
-            if (!class_exists($classname)) {
-                send_file_not_found();
-            }
-        }
+		
+		if (($classname = 'custom_qformat_' . $format) && class_exists($classname)) {
+			// ok
+		} else {
+			$classname = 'qformat_' . $format;
+			if (!class_exists($classname)) {
+				send_file_not_found();
+			}
+		}
 
         $qformat = new $classname();
 
-        if (!$category = $DB->get_record('question_categories', array('id' => $categoryid))) {
+        if (!$category = $DB->get_record('question_categories', array('id' => $category_id))) {
             send_file_not_found();
         }
 
@@ -300,7 +302,7 @@ function custom_question_pluginfile($course, $context, $component, $filearea, $a
             print_error('exporterror', 'question', $thispageurl->out());
         }
 
-        // Export data to moodle file pool.
+        // export data to moodle file pool
         if (!$content = $qformat->exportprocess(true)) {
             send_file_not_found();
         }
@@ -384,17 +386,17 @@ function custom_question_pluginfile($course, $context, $component, $filearea, $a
  */
 function custom_file_pluginfile($relativepath, $forcedownload, $preview = null) {
     global $DB, $CFG, $USER;
-    // Relative path must start with '/'.
+    // relative path must start with '/'
     if (!$relativepath) {
         print_error('invalidargorconf');
     } else if ($relativepath[0] != '/') {
         print_error('pathdoesnotstartslash');
     }
 
-    // Extract relative path components.
+    // extract relative path components
     $args = explode('/', ltrim($relativepath, '/'));
 
-    if (count($args) < 3) { // Always at least context, component and filearea.
+    if (count($args) < 3) { // always at least context, component and filearea
         print_error('invalidarguments');
     }
 
@@ -404,12 +406,12 @@ function custom_file_pluginfile($relativepath, $forcedownload, $preview = null) 
 
     list($context, $course, $cm) = get_context_info_array($contextid);
 
-    if ($component === 'question') {
+	if ($component === 'question') {
         require_once($CFG->libdir . '/questionlib.php');
         custom_question_pluginfile($course, $context, 'question', $filearea, $args, $forcedownload);
         send_file_not_found();
-        exit;
-    }
+		exit;
+	}
 }
 
 custom_file_pluginfile($relativepath, $forcedownload, $preview);

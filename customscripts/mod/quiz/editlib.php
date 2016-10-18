@@ -1,27 +1,4 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-
-/**
- * Edit lib quizzes
- *
- * @package    mod_quiz
- * @copyright  1999 onwards Martin Dougiamas and others {@link http://moodle.com}
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 
 require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 require_once($CFG->dirroot . '/local/question_filters/lib.php');
@@ -32,26 +9,25 @@ class custom_quiz_add_random_form extends quiz_add_random_form {
         global $CFG, $DB;
         $mform =& $this->_form;
 
-        $mform->addElement('header', 'categoryheader', 'Special Filters');
-        $mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
+		$mform->addElement('header', 'categoryheader', 'Special Filters');
+		$mform->addElement('text', 'filter_name', 'Fragetitel', 'maxlength="254" size="50"');
         $mform->setType('filter_name', PARAM_TEXT);
         $mform->addElement('text', 'filter_questiontext', 'Fragetext', 'maxlength="254" size="50"');
         $mform->setType('filter_questiontext', PARAM_TEXT);
         $mform->addElement('text', 'filter_meta_field1', 'Metadatenfeld', 'maxlength="254" size="50"');
         $mform->setType('filter_meta_field1', PARAM_TEXT);
-        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter',
-                            array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
+        $mform->addElement('select', 'filter_defaultmark_search', 'Punktezahl Filter', array('>' => '>', '>=' => '>=', '=' => '=', '<=' => '<=', '<' => '<'));
         $mform->addElement('text', 'filter_defaultmark', 'Punktezahl', 'maxlength="254" size="50"');
         $mform->setType('filter_defaultmark', PARAM_TEXT);
 
-        parent::definition();
-    }
+		parent::definition();
+	}
 }
 
 function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $number,
         $includesubcategories) {
     global $DB;
-
+	
     $category = $DB->get_record('question_categories', array('id' => $categoryid));
     if (!$category) {
         print_error('invalidcategoryid', 'error');
@@ -60,8 +36,8 @@ function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $numbe
     $catcontext = context::instance_by_id($category->contextid);
     require_capability('moodle/question:useall', $catcontext);
 
-    $recheckquestions = array();
-
+	$recheckQuestions = array();
+	
     // Find existing random questions in this category that are
     // not used by any quiz.
     if ($existingquestions = $DB->get_records_sql(
@@ -76,8 +52,8 @@ function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $numbe
             ORDER BY id", array($category->id, ($includesubcategories ? '1' : '0')))) {
         // Take as many of these as needed.
         while (($existingquestion = array_shift($existingquestions)) && $number > 0) {
-            quiz_add_quiz_question($existingquestion->id, $quiz, $addonpage);
-            $recheckquestions[] = $existingquestion;
+			quiz_add_quiz_question($existingquestion->id, $quiz, $addonpage);
+            $recheckQuestions[] = $existingquestion;
             $number -= 1;
         }
     }
@@ -101,15 +77,15 @@ function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $numbe
             print_error('cannotinsertrandomquestion', 'quiz');
         }
         quiz_add_quiz_question($question->id, $quiz, $addonpage);
-        $recheckquestions[] = $question;
+		$recheckQuestions[] = $question;
     }
+	
+	foreach ($recheckQuestions as $question) {
+		$filter = local_question_filters_get_filter_from_form();
+		$filter->questionid = $question->id;
 
-    foreach ($recheckquestions as $question) {
-        $filter = local_question_filters_get_filter_from_form();
-        $filter->questionid = $question->id;
-
-        local_question_filters_save_question_extra_fields($filter);
-    }
+		local_question_filters_save_question_extra_fields($filter);
+	}
 }
 
 
@@ -123,14 +99,14 @@ function custom_quiz_add_random_questions($quiz, $addonpage, $categoryid, $numbe
  *     for links returning to the current page, as a moodle_url object
  * @param bool $allowdelete Indicates whether the delete icons should be displayed
  * @param bool $reordertool  Indicates whether the reorder tool should be displayed
- * @param bool $quizqbanktool  Indicates whether the question bank should be displayed
+ * @param bool $quiz_qbanktool  Indicates whether the question bank should be displayed
  * @param bool $hasattempts  Indicates whether the quiz has attempts
  * @param object $defaultcategoryobj
  * @param bool $canaddquestion is the user able to add and use questions anywere?
  * @param bool $canaddrandom is the user able to add random questions anywere?
  */
 function custom_quiz_print_question_list($quiz, $pageurl, $allowdelete, $reordertool,
-        $quizqbanktool, $hasattempts, $defaultcategoryobj, $canaddquestion, $canaddrandom) {
+        $quiz_qbanktool, $hasattempts, $defaultcategoryobj, $canaddquestion, $canaddrandom) {
     global $CFG, $DB, $OUTPUT;
     $strorder = get_string('order');
     $strquestionname = get_string('questionname', 'quiz');
@@ -202,7 +178,7 @@ function custom_quiz_print_question_list($quiz, $pageurl, $allowdelete, $reorder
     $reordercontrols3 = '<a href="javascript:select_all_in(\'FORM\', null, ' .
             '\'quizquestions\');">' .
             $strselectall . '</a> /';
-    $reordercontrols3 .= ' <a href="javascript:deselect_all_in(\'FORM\', ' .
+    $reordercontrols3.=    ' <a href="javascript:deselect_all_in(\'FORM\', ' .
             'null, \'quizquestions\');">' .
             $strselectnone . '</a>';
 
@@ -415,7 +391,7 @@ function custom_quiz_print_question_list($quiz, $pageurl, $allowdelete, $reorder
                                 get_string('questionposition', 'quiz', $qnodisplay) . '</label>';
                         echo '<input type="text" name="o' . $question->slot .
                                 '" id="o' . $question->id . '"' .
-                                '" size="2" value="' . (10 * $count + 10) .
+                                '" size="2" value="' . (10*$count + 10) .
                                 '" tabindex="' . ($lastindex + $qno) . '" />';
                         ?>
 </div>
@@ -427,7 +403,7 @@ function custom_quiz_print_question_list($quiz, $pageurl, $allowdelete, $reorder
                 <?php
                 if ($question->qtype == 'random') { // It is a random question.
                     if (!$reordertool) {
-                        custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quizqbanktool);
+                        custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quiz_qbanktool);
                     } else {
                         quiz_print_randomquestion_reordertool($question, $pageurl, $quiz);
                     }
@@ -458,7 +434,7 @@ function custom_quiz_print_question_list($quiz, $pageurl, $allowdelete, $reorder
                     // Do not include the last page break for reordering
                     // to avoid creating a new extra page in the end.
                     echo '<input type="hidden" name="opg' . $pagecount . '" size="2" value="' .
-                            (10 * $count + 10) . '" />';
+                            (10*$count + 10) . '" />';
                 }
                 echo "</div></div>";
 
@@ -498,9 +474,9 @@ function custom_quiz_print_question_list($quiz, $pageurl, $allowdelete, $reorder
  * @param object $question A question object from the database questions table
  * @param object $questionurl The url of the question editing page as a moodle_url object
  * @param object $quiz The quiz in the context of which the question is being displayed
- * @param bool $quizqbanktool Indicate to this function if the question bank window open
+ * @param bool $quiz_qbanktool Indicate to this function if the question bank window open
  */
-function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quizqbanktool) {
+function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quiz_qbanktool) {
     global $DB, $OUTPUT;
     echo '<div class="quiz_randomquestion">';
 
@@ -531,30 +507,23 @@ function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quizqbank
     echo '</div>';
 
     $filter = local_question_filters_get_question_extra_fields($question->id);
-    $questionids = custom_get_available_questions_from_category_with_filter(
+	$questionids = custom_get_available_questions_from_category_with_filter(
             $category->id, $question->questiontext == '1', $filter);
     $questioncount = count($questionids);
 
-    if ($filter && ($filter->filter_name
-                    || $filter->filter_questiontext
-                    || $filter->filter_meta_field1
-                    || $filter->filter_defaultmark !== null)) {
-        echo '<div>';
-        echo '<b>Filters:</b>'.'<br>';
-        if ($filter->filter_name) {
-            echo 'Name: '.$filter->filter_name.'<br>';
-        };
-        if ($filter->filter_questiontext) {
-            echo 'Text: '.$filter->filter_questiontext.'<br>';
-        };
-        if ($filter->filter_meta_field1) {
-            echo 'Metadatenfeld: '.$filter->filter_meta_field1.'<br>';
-        };
-        if ($filter->filter_defaultmark !== null) {
-            echo 'Mark: '.$filter->filter_defaultmark_search.' '.$filter->filter_defaultmark.'<br>';
-        };
-        echo '</div>';
-    }
+	if ($filter && ($filter->filter_name || $filter->filter_questiontext || $filter->filter_meta_field1 || $filter->filter_defaultmark !== null)) {
+		echo '<div>';
+		echo '<b>Filters:</b>'.'<br>';
+		if ($filter->filter_name)
+			echo 'Name: '.$filter->filter_name.'<br>';
+		if ($filter->filter_questiontext)
+			echo 'Text: '.$filter->filter_questiontext.'<br>';
+		if ($filter->filter_meta_field1)
+			echo 'Metadatenfeld: '.$filter->filter_meta_field1.'<br>';
+		if ($filter->filter_defaultmark !== null)
+			echo 'Mark: '.$filter->filter_defaultmark_search.' '.$filter->filter_defaultmark.'<br>';
+		echo '</div>';
+	}
     echo '<div class="randomquestionqlist">';
     if ($questioncount == 0) {
         // No questions in category, give an error plus instructions.
@@ -601,23 +570,22 @@ function custom_quiz_print_randomquestion($question, $pageurl, $quiz, $quizqbank
 }
 
 function custom_get_available_questions_from_category_with_filter($categoryid, $subcategories, $filter) {
-    global $DB;
+	global $DB;
+	
+	if ($subcategories) {
+		$categoryids = question_categorylist($categoryid);
+	} else {
+		$categoryids = array($categoryid);
+	}
 
-    if ($subcategories) {
-        $categoryids = question_categorylist($categoryid);
-    } else {
-        $categoryids = array($categoryid);
-    }
+	$params = array();
+	$where = array('1 = 1');
 
-    $params = array();
-    $where = array('1 = 1');
+	local_question_filters_get_filter_sql($params, $where, $filter, true, false);
 
-    local_question_filters_get_filter_sql($params, $where, $filter, true, false);
+	$questionids = question_bank::get_finder()->get_questions_from_categories(
+			$categoryids, 'qtype NOT IN (' . "'description','missingtype','random','randomsamatch'" . ') AND '.join(' and ', $where), $params);
 
-    $questionids = question_bank::get_finder()->get_questions_from_categories(
-            $categoryids,
-            'qtype NOT IN (' . "'description','missingtype','random','randomsamatch'" . ') AND '.join(' and ', $where), $params);
-
-    return $questionids;
+	return $questionids;
 }
-    
+	

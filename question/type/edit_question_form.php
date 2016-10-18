@@ -124,7 +124,7 @@ abstract class question_edit_form extends question_wizard_form {
         global $COURSE, $CFG, $DB, $PAGE;
 
         $qtype = $this->qtype();
-        $langfile = "qtype_$qtype";
+        $langfile = "qtype_{$qtype}";
 
         $mform = $this->_form;
 
@@ -182,9 +182,11 @@ abstract class question_edit_form extends question_wizard_form {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
 
+        // Added by G. Schwed / GTN-Solutions for DUK
         $mform->addElement('text', 'meta_field1', 'Metadatenfeld',
                 array('size' => 50, 'maxlength' => 255));
         $mform->setType('meta_field1', PARAM_TEXT);
+        // End of modification by G. Schwed
 
         $mform->addElement('editor', 'questiontext', get_string('questiontext', 'question'),
                 array('rows' => 15), $this->editoroptions);
@@ -205,10 +207,11 @@ abstract class question_edit_form extends question_wizard_form {
         // Any questiontype specific fields.
         $this->definition_inner($mform);
 
-        if (!empty($CFG->usetags)) {
+        if (core_tag_tag::is_enabled('core_question', 'question')) {
             $mform->addElement('header', 'tagsheader', get_string('tags'));
-            $mform->addElement('tags', 'tags', get_string('tags'));
         }
+        $mform->addElement('tags', 'tags', get_string('tags'),
+                array('itemtype' => 'question', 'component' => 'core_question'));
 
         if (!empty($this->question->id)) {
             $mform->addElement('header', 'createdmodifiedheader',
@@ -425,7 +428,7 @@ abstract class question_edit_form extends question_wizard_form {
         }
         $penaltyoptions = array();
         foreach ($penalties as $penalty) {
-            $penaltyoptions["$penalty"] = (100 * $penalty) . '%';
+            $penaltyoptions["{$penalty}"] = (100 * $penalty) . '%';
         }
         $mform->addElement('select', 'penalty',
                 get_string('penaltyforeachincorrecttry', 'question'), $penaltyoptions);
@@ -567,7 +570,7 @@ abstract class question_edit_form extends question_wizard_form {
             // are using object notation here, so we will be setting
             // ->_defaultValues['fraction'][0]. That does not work, so we have
             // to unset ->_defaultValues['fraction[0]'].
-            unset($this->_form->_defaultValues["fraction[$key]"]);
+            unset($this->_form->_defaultValues["fraction[{$key}]"]);
 
             // Prepare the feedback editor to display files in draft area.
             $draftitemid = file_get_submitted_draft_itemid('feedback['.$key.']');
