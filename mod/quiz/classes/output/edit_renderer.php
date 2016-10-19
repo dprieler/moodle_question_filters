@@ -666,6 +666,71 @@ class edit_renderer extends \plugin_renderer_base {
 
         // End of indentation div.
         $output .= html_writer::end_tag('div');
+
+		/*
+		$question = $structure->get_question_in_slot($slot);
+		$filter = local_question_filters_get_question_extra_fields($question->id);
+		$questionids = custom_get_available_questions_from_category_with_filter(
+				$question->category, $question->questiontext == '1', $filter);
+		$questioncount = count($questionids);
+
+		ob_start();
+		global $DB;
+
+		if ($filter && ($filter->filter_name || $filter->filter_questiontext || $filter->filter_meta_field1 || $filter->filter_defaultmark !== null)) {
+			echo '<div>';
+			echo '<b>Filters:</b>'.'<br>';
+			if ($filter->filter_name)
+				echo 'Name: '.$filter->filter_name.'<br>';
+			if ($filter->filter_questiontext)
+				echo 'Text: '.$filter->filter_questiontext.'<br>';
+			if ($filter->filter_meta_field1)
+				echo 'Metadatenfeld: '.$filter->filter_meta_field1.'<br>';
+			if ($filter->filter_defaultmark !== null)
+				echo 'Mark: '.$filter->filter_defaultmark_search.' '.$filter->filter_defaultmark.'<br>';
+			echo '</div>';
+		}
+
+		/*
+		echo '<div class="randomquestionqlist">';
+		if ($questioncount == 0) {
+			// No questions in category, give an error plus instructions.
+			echo '<span class="error">';
+			print_string('noquestionsnotinuse', 'quiz');
+			echo '</span>';
+		} else {
+			// Category has questions.
+
+			// Get a sample from the database.
+			define('NUM_QS_TO_SHOW_IN_RANDOM', 5);
+			$questionidstoshow = array_slice($questionids, 0, NUM_QS_TO_SHOW_IN_RANDOM);
+			$questionstoshow = $DB->get_records_list('question', 'id', $questionidstoshow,
+					'', 'id, qtype, name, questiontext, questiontextformat');
+
+			// Then list them.
+			echo '<ul>';
+			foreach ($questionstoshow as $subquestion) {
+				echo '<li>' . quiz_question_tostring($subquestion, true) . '</li>';
+			}
+
+			if ($questioncount > NUM_QS_TO_SHOW_IN_RANDOM) {
+				echo '<li>...</li>';
+			}
+
+			// Finally display the total number.
+			echo '<li class="totalquestionsinrandomqcategory">';
+			print_string('totalquestionsinrandomqcategory', 'quiz', $questioncount);
+			echo '</li>';
+			echo '</ul>';
+		}
+
+		echo '</div>';
+		echo '<div class="randomquestioncategorycount">';
+		echo '</div>';
+		* /
+		$output .= ob_get_clean();
+		*/
+
         $output .= html_writer::end_tag('div');
 
         return $output;
