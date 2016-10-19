@@ -1,6 +1,7 @@
 <?php
 
-class custom_question_bank_view extends question_bank_view {
+class custom_question_bank_view extends core_question\bank\view {
+	/*
     protected function known_field_types() {
         return array_merge(parent::known_field_types(),
 			array(
@@ -9,12 +10,20 @@ class custom_question_bank_view extends question_bank_view {
 			)
 		);
 	}
+	*/
 
     protected function wanted_columns() {
-		$columns = parent::wanted_columns();
-		$columns[] = 'defaultmark';
-		$columns[] = 'meta_field1';
-		return $columns;
+    	global $CFG;
+        if (empty($CFG->questionbankcolumns)) {
+        	$CFG->questionbankcolumns = join(',', array('checkbox_column', 'question_type_column',
+                                     'question_name_column', 'edit_action_column', 'copy_action_column',
+                                     'preview_action_column', 'delete_action_column',
+                                     'creator_name_column',
+                                     'modifier_name_column',
+				'custom_question_bank_question_defaultmark_column', 'custom_question_bank_question_meta_field1_column'));
+		}
+
+		return parent::wanted_columns();
 	}
 
     protected function display_question_list($contexts, $pageurl, $categoryandcontext,
@@ -93,4 +102,3 @@ class custom_question_bank_question_meta_field1_column extends question_bank_row
         return array('q.defaultmark');
     }
 }
-
