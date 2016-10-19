@@ -122,7 +122,7 @@ if ($id) {
         print_error('questiondoesnotexist', 'question', $returnurl);
     }
 	
-	if ($extra_fields = local_question_filters_get_question_extra_fields($question->id)) {
+	if ($extra_fields = \local_question_filters\lib::get_question_extra_fields($question->id)) {
 		$question = (object) array_merge((array) $extra_fields, (array) $question);
 	}
     get_question_options($question, true);

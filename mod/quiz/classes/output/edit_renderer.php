@@ -667,16 +667,10 @@ class edit_renderer extends \plugin_renderer_base {
         // End of indentation div.
         $output .= html_writer::end_tag('div');
 
-		/*
-		$question = $structure->get_question_in_slot($slot);
-		$filter = local_question_filters_get_question_extra_fields($question->id);
-		$questionids = custom_get_available_questions_from_category_with_filter(
-				$question->category, $question->questiontext == '1', $filter);
-		$questioncount = count($questionids);
-
 		ob_start();
-		global $DB;
 
+		$question = $structure->get_question_in_slot($slot);
+		$filter = \local_question_filters\lib::get_question_extra_fields($question->id);
 		if ($filter && ($filter->filter_name || $filter->filter_questiontext || $filter->filter_meta_field1 || $filter->filter_defaultmark !== null)) {
 			echo '<div>';
 			echo '<b>Filters:</b>'.'<br>';
@@ -690,6 +684,13 @@ class edit_renderer extends \plugin_renderer_base {
 				echo 'Mark: '.$filter->filter_defaultmark_search.' '.$filter->filter_defaultmark.'<br>';
 			echo '</div>';
 		}
+
+		/*
+		$questionids = custom_get_available_questions_from_category_with_filter(
+				$question->category, $question->questiontext == '1', $filter);
+		$questioncount = count($questionids);
+
+		global $DB;
 
 		/*
 		echo '<div class="randomquestionqlist">';
@@ -727,9 +728,8 @@ class edit_renderer extends \plugin_renderer_base {
 		echo '</div>';
 		echo '<div class="randomquestioncategorycount">';
 		echo '</div>';
-		* /
-		$output .= ob_get_clean();
 		*/
+		$output .= ob_get_clean();
 
         $output .= html_writer::end_tag('div');
 
@@ -950,10 +950,17 @@ class edit_renderer extends \plugin_renderer_base {
 
         // If this is a random question, display a link to show the questions
         // selected from in the question bank.
+		$filter = \local_question_filters\lib::get_question_extra_fields($question->id);
         $qbankurl = new \moodle_url('/question/edit.php', array(
                 'cmid' => $structure->get_cmid(),
                 'cat' => $question->category . ',' . $question->contextid,
-                'recurse' => !empty($question->questiontext)));
+                'recurse' => !empty($question->questiontext),
+				'filter_name' => $filter->filter_name,
+				'filter_questiontext' => $filter->filter_questiontext,
+				'filter_meta_field1' => $filter->filter_meta_field1,
+				'filter_defaultmark' => $filter->filter_defaultmark,
+				'filter_defaultmark_search' => $filter->filter_defaultmark_search
+		));
         $qbanklink = ' ' . \html_writer::link($qbankurl,
                 get_string('seequestions', 'quiz'), array('class' => 'mod_quiz_random_qbank_link'));
 

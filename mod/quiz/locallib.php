@@ -221,7 +221,7 @@ function quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $time
 
             // Normal case, pick one at random.
             $questionid = $randomloader->get_next_question_id($questiondata->category,
-                        (bool) $questiondata->questiontext);
+                        (bool) $questiondata->questiontext, $questiondata);
             if ($questionid === null) {
                 throw new moodle_exception('notenoughrandomquestions', 'quiz',
                                            $quizobj->view_url(), $questiondata);

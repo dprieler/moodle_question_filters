@@ -86,7 +86,7 @@ class random_question_loader {
      *      that category, or that category and subcategories.
      * @return int|null the id of the question picked, or null if there aren't any.
      */
-    public function get_next_question_id($categoryid, $includesubcategories) {
+    public function get_next_question_id($categoryid, $includesubcategories, $randomquestion) {
         $this->ensure_questions_for_category_loaded($categoryid, $includesubcategories);
 
         $categorykey = $this->get_category_key($categoryid, $includesubcategories);
@@ -94,10 +94,48 @@ class random_question_loader {
             return null;
         }
 
-        reset($this->availablequestionscache[$categorykey]);
-        $lowestcount = key($this->availablequestionscache[$categorykey]);
+        // [gtn]
+        $categorycache = $this->availablequestionscache[$categorykey];
+		if (!$categorycache) {
+			return null;
+		}
+
+		$filter = \local_question_filters\lib::get_question_extra_fields($randomquestion->id);
+		$params = array();
+		$where = array('1 = 1');
+		local_question_filters_get_filter_sql($params, $where, $filter, true, false);
+
+		global $DB;
+
+		$where = join(' AND ', $where);
+        $questionidsFitlered = $DB->get_records_select_menu('question',
+                "parent = 0
+                 AND hidden = 0
+                 AND {$where}", $params, '', 'id,id AS id2');
+
+		// find available question
+		$questionid = 0;
+		foreach ($categorycache as $questionids) {
+			foreach ($questionids as $questionidTest => $tmp) {
+				if (isset($questionidsFitlered[$questionidTest])) {
+					$questionid = $questionidTest;
+					break;
+				}
+			}
+		}
+
+		if (!$questionid) {
+			return null;
+		}
+		// [/gtn]
+
+		/*
+        reset($questionids);
+        $lowestcount = key($questions);
         reset($this->availablequestionscache[$categorykey][$lowestcount]);
         $questionid = key($this->availablequestionscache[$categorykey][$lowestcount]);
+		*/
+		
         $this->use_question($questionid);
         return $questionid;
     }

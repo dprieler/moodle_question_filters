@@ -1861,7 +1861,7 @@ class quiz_attempt {
         } else {
             $randomloader = new \core_question\bank\random_question_loader($qubaids, array());
             $newqusetionid = $randomloader->get_next_question_id($questiondata->category,
-                    (bool) $questiondata->questiontext);
+                    (bool) $questiondata->questiontext, $questiondata);
             if ($newqusetionid === null) {
                 throw new moodle_exception('notenoughrandomquestions', 'quiz',
                         $quizobj->view_url(), $questiondata);

@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2015050600;
+$plugin->version   = 2016101900;
 $plugin->requires  = 2011120500;
 $plugin->component = 'local_question_filters';
-$plugin->release = 'v1.0';
+$plugin->release = 'v1.1';
 $plugin->maturity = MATURITY_STABLE;
