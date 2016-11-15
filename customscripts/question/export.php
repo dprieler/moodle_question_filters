@@ -27,7 +27,7 @@
 // require_once(dirname(__FILE__) . '/../config.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 require_once(dirname(__FILE__) . '/editlib.php');
-require_once($CFG->dirroot . '/question/export_form.php');
+require_once(dirname(__FILE__) . '/export_form.php');
 require_once($CFG->dirroot . '/question/format.php');
 
 list($thispageurl, $contexts, $cmid, $cm, $module, $pagevars) =
@@ -69,6 +69,12 @@ if ($from_form = $export_form->get_data()) {
             $qformat->export_file_extension();
     $export_url = question_make_export_url($thiscontext->id, $category->id,
             $from_form->format, $withcategories, $withcontexts, $filename);
+
+	$export_url->param('filter_name', $from_form->filter_name);
+	$export_url->param('filter_questiontext', $from_form->filter_questiontext);
+	$export_url->param('filter_meta_field1', $from_form->filter_meta_field1);
+	$export_url->param('filter_defaultmark_search', $from_form->filter_defaultmark_search);
+	$export_url->param('filter_defaultmark', $from_form->filter_defaultmark);
 
     echo $OUTPUT->box_start();
     echo get_string('yourfileshoulddownload', 'question', $export_url->out());
